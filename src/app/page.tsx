@@ -234,14 +234,14 @@ export default function Dashboard() {
                   <Plus className="h-4 w-4 mr-2" />
                   New Sale
                 </Button>
-                <Button 
+                {/* <Button 
                   className="w-full justify-start" 
                   variant="outline"
                   onClick={() => handleQuickAction('new-prescription')}
                 >
                   <FileCheck className="h-4 w-4 mr-2" />
                   New Prescription
-                </Button>
+                </Button> */}
                 <Button 
                   className="w-full justify-start" 
                   variant="outline"

@@ -491,8 +491,8 @@ export default function PrescriptionPage() {
     { id: 'upload', label: 'Upload & Scan', icon: Upload },
     { id: 'verify', label: 'Verification', icon: Shield },
     { id: 'dosage', label: 'Dosage Instructions', icon: Pill },
-    { id: 'history', label: 'Patient History', icon: History },
-    { id: 'emr', label: 'EMR Integration', icon: Database }
+    // { id: 'history', label: 'Patient History', icon: History },
+    // { id: 'emr', label: 'EMR Integration', icon: Database }
   ];
 
   const totalPrescriptions = prescriptionsData.length;
@@ -639,7 +639,7 @@ export default function PrescriptionPage() {
             {activeTab === 'verify' && <PrescriptionVerificationPanel />}
             {activeTab === 'dosage' && <DosageInstructions />}
             {activeTab === 'history' && <PrescriptionHistory />}
-            {activeTab === 'emr' && <EMRIntegrationPanel />}
+            {/* {activeTab === 'emr' && <EMRIntegrationPanel />} */}
 
       {/* Upload Modal */}
       <PrescriptionUploadModal 

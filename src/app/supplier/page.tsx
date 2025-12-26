@@ -842,8 +842,6 @@ export default function SupplierPage() {
             </div>
           </div>
         )}
-      </div>
-
       {/* Purchase Order Creation Modal */}
       <CreatePurchaseOrderModal
         isOpen={showCreateOrderModal}

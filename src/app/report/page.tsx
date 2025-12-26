@@ -1029,7 +1029,7 @@ export default function ReportsPage() {
     { id: 'financial', label: 'Financial Reports', icon: Calculator },
     { id: 'expiry', label: 'Expiry & Movement', icon: AlertTriangle },
     { id: 'profitability', label: 'Profitability', icon: DollarSign },
-    { id: 'forecasting', label: 'Forecasting', icon: Target },
+    // { id: 'forecasting', label: 'Forecasting', icon: Target },
     // { id: 'accounting', label: 'Accounting', icon: CreditCard }
   ];
 
@@ -1129,7 +1129,7 @@ export default function ReportsPage() {
             </div>
           )}
 
-          {activeTab === 'forecasting' && (
+          {/* {activeTab === 'forecasting' && (
             <div className="space-y-6">
               <ForecastingReport />
               <div className="grid gap-6 md:grid-cols-2">
@@ -1137,7 +1137,7 @@ export default function ReportsPage() {
                 <InventoryOverview />
               </div>
             </div>
-          )}
+          )} */}
 
           {/* {activeTab === 'accounting' && (
             <div className="space-y-6">

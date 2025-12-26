@@ -121,7 +121,7 @@ export default function ProfilePage() {
       </Card>
 
       {/* Pharmacy Information */}
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle>Pharmacy Information</CardTitle>
         </CardHeader>
@@ -146,7 +146,7 @@ export default function ProfilePage() {
             </div>
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* Security */}
       <Card>

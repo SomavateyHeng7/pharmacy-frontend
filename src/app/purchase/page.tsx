@@ -53,7 +53,9 @@ import {
   Target,
   Settings
 } from 'lucide-react';
-import Sidebar from '@/components/layout/sidebar';
+import { PurchaseHeader } from '@/components/purchase/PurchaseHeader';
+import { PurchaseStats } from '@/components/purchase/PurchaseStats';
+import { PurchaseTabs } from '@/components/purchase/PurchaseTabs';
 
 // Mock data for suppliers with enhanced integration
 const suppliersData = [
@@ -2195,105 +2197,17 @@ export default function PurchasePage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">
-            Purchase Order Management
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Manage purchase orders, approvals, and vendor relationships
-          </p>
-        </div>
-        <div className="flex space-x-2">
-          <Button variant="outline">
-            <Download className="h-4 w-4 mr-2" />
-            Export
-          </Button>
-          <Button onClick={() => setShowCreateModal(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Create Purchase Order
-          </Button>
-        </div>
-      </div>
+      <PurchaseHeader onCreateOrder={() => setShowCreateModal(true)} />
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-        <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <ShoppingCart className="h-8 w-8 text-blue-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-muted-foreground">Total Orders</p>
-                  <p className="text-2xl font-bold">{stats.totalOrders}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <Clock className="h-8 w-8 text-orange-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-muted-foreground">Pending Approval</p>
-                  <p className="text-2xl font-bold">{stats.pendingOrders}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+      <PurchaseStats
+        totalOrders={stats.totalOrders}
+        pendingOrders={stats.pendingOrders}
+        approvedOrders={stats.approvedOrders}
+        totalValue={stats.totalValue}
+        pendingPayments={stats.pendingPayments}
+      />
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <CheckCircle className="h-8 w-8 text-green-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-muted-foreground">Approved Orders</p>
-                  <p className="text-2xl font-bold">{stats.approvedOrders}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <DollarSign className="h-8 w-8 text-purple-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-muted-foreground">Total Value</p>
-                  <p className="text-2xl font-bold">${stats.totalValue.toLocaleString()}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <AlertTriangle className="h-8 w-8 text-red-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-muted-foreground">Reorder Needed</p>
-                  <p className="text-2xl font-bold">{reorderNeeded.length}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Navigation Tabs */}
-        <div className="flex space-x-2 border-b overflow-x-auto">
-          {tabs.map((tab) => (
-            <Button
-              key={tab.id}
-              variant={activeTab === tab.id ? 'default' : 'ghost'}
-              onClick={() => setActiveTab(tab.id)}
-              className="flex items-center space-x-2 whitespace-nowrap"
-            >
-              <tab.icon className="h-4 w-4" />
-              <span>{tab.label}</span>
-            </Button>
-          ))}
-        </div>
+      <PurchaseTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
         {/* Tab Content */}
         {activeTab === 'orders' && (
@@ -3040,7 +2954,6 @@ export default function PurchasePage() {
             </div>
           </div>
         )}
-      </div>
 
       {/* Modals */}
       <CreatePurchaseOrderModal 
