@@ -669,24 +669,24 @@ export default function SupplierPage() {
   const totalSuppliers = suppliersData.length;
   const activeSuppliers = suppliersData.filter(s => s.status === 'Active').length;
   const totalSpent = suppliersData.reduce((sum, s) => sum + s.totalSpent, 0);
-  const avgRating = suppliersData.reduce((sum, s) => sum + s.rating, 0) / suppliersData.length;
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold">Supplier Management</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">Supplier Management</h1>
+            <p className="text-sm sm:text-base text-gray-600 mt-1">
               Manage vendors, purchase orders, and automated reordering
             </p>
           </div>
-          <div className="flex space-x-2">
-            <Button variant="outline">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+            <Button variant="outline" className="w-full sm:w-auto">
               <Download className="h-4 w-4 mr-2" />
               Export Data
             </Button>
-            <Button onClick={() => setShowCreateOrderModal(true)}>
+            <Button onClick={() => setShowCreateOrderModal(true)} className="w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-2" />
               Create Purchase Order
             </Button>
@@ -694,47 +694,36 @@ export default function SupplierPage() {
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card>
-            <CardContent className="p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardContent className="p-4 sm:p-6">
               <div className="flex items-center">
-                <Building2 className="h-8 w-8 text-blue-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-muted-foreground">Total Suppliers</p>
-                  <p className="text-2xl font-bold">{totalSuppliers}</p>
+                <Building2 className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 shrink-0" />
+                <div className="ml-3 sm:ml-4">
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Total Suppliers</p>
+                  <p className="text-lg sm:text-2xl font-bold">{totalSuppliers}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card>
-            <CardContent className="p-6">
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardContent className="p-4 sm:p-6">
               <div className="flex items-center">
-                <CheckCircle className="h-8 w-8 text-green-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-muted-foreground">Active Suppliers</p>
-                  <p className="text-2xl font-bold">{activeSuppliers}</p>
+                <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-green-600 shrink-0" />
+                <div className="ml-3 sm:ml-4">
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Active Suppliers</p>
+                  <p className="text-lg sm:text-2xl font-bold">{activeSuppliers}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card>
-            <CardContent className="p-6">
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardContent className="p-4 sm:p-6">
               <div className="flex items-center">
-                <DollarSign className="h-8 w-8 text-purple-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-muted-foreground">Total Spent</p>
-                  <p className="text-2xl font-bold">${totalSpent.toLocaleString()}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <Star className="h-8 w-8 text-yellow-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-muted-foreground">Avg Rating</p>
-                  <p className="text-2xl font-bold">{avgRating.toFixed(1)}/5.0</p>
+                <DollarSign className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600 shrink-0" />
+                <div className="ml-3 sm:ml-4">
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Total Spent</p>
+                  <p className="text-lg sm:text-2xl font-bold">${totalSpent.toLocaleString()}</p>
                 </div>
               </div>
             </CardContent>
@@ -742,7 +731,7 @@ export default function SupplierPage() {
         </div>
 
         {/* Supplier Management Tabs */}
-        <div className="flex space-x-2 border-b overflow-x-auto">
+        <div className="flex space-x-2 border-b overflow-x-auto pb-2 scrollbar-hide">
           {supplierTabs.map((tab) => (
             <Button
               key={tab.id}
@@ -751,7 +740,7 @@ export default function SupplierPage() {
               className="flex items-center space-x-2 whitespace-nowrap"
             >
               <tab.icon className="h-4 w-4" />
-              <span>{tab.label}</span>
+              <span className="text-sm sm:text-base">{tab.label}</span>
             </Button>
           ))}
         </div>
@@ -804,7 +793,7 @@ export default function SupplierPage() {
                         </div>
                       </div>
                       <div className="flex items-center space-x-4">
-                        <div className="text-right">
+                        {/* <div className="text-right">
                           <div className="flex items-center mb-1">
                             {[...Array(5)].map((_, i) => (
                               <Star 
@@ -814,7 +803,7 @@ export default function SupplierPage() {
                             ))}
                           </div>
                           <p className="text-xs text-muted-foreground">{supplier.rating}/5.0</p>
-                        </div>
+                        </div> */}
                         <div className="text-right">
                           <p className="font-bold">${supplier.totalSpent.toLocaleString()}</p>
                           <p className="text-xs text-muted-foreground">{supplier.totalOrders} orders</p>
@@ -851,6 +840,7 @@ export default function SupplierPage() {
         }}
         supplierId={preselectedSupplierId}
       />
+      </div>
     </div>
   );
 }

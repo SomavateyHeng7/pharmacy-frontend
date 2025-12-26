@@ -886,23 +886,24 @@ export default function CustomerPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-6">
           {/* Page Title and Actions */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
                 Customer & Patient Management
               </h1>
-              <p className="text-muted-foreground">
+              <p className="text-sm sm:text-base text-gray-600 mt-1">
                 Comprehensive patient profiles with medical records and communication
               </p>
             </div>
-            <div className="flex space-x-2">
-              <Button variant="outline">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+              <Button variant="outline" className="w-full sm:w-auto">
                 <Download className="h-4 w-4 mr-2" />
                 Export Data
               </Button>
-              <Button onClick={() => setIsAddingCustomer(true)}>
+              <Button onClick={() => setIsAddingCustomer(true)} className="w-full sm:w-auto">
                 <UserPlus className="h-4 w-4 mr-2" />
                 New Customer
               </Button>
@@ -910,70 +911,70 @@ export default function CustomerPage() {
           </div>
 
           {/* Quick Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-            <Card>
-              <CardContent className="p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6">
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center">
-                  <User className="h-8 w-8 text-blue-600" />
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-muted-foreground">
+                  <User className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 shrink-0" />
+                  <div className="ml-3 sm:ml-4">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground">
                       Total Customers
                     </p>
-                    <p className="text-2xl font-bold">{totalCustomers}</p>
+                    <p className="text-lg sm:text-2xl font-bold">{totalCustomers}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
-            <Card>
-              <CardContent className="p-6">
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center">
-                  <Activity className="h-8 w-8 text-green-600" />
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-muted-foreground">
+                  <Activity className="h-6 w-6 sm:h-8 sm:w-8 text-green-600 shrink-0" />
+                  <div className="ml-3 sm:ml-4">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground">
                       Active Customers
                     </p>
-                    <p className="text-2xl font-bold">{activeCustomers}</p>
+                    <p className="text-lg sm:text-2xl font-bold">{activeCustomers}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
-            <Card>
-              <CardContent className="p-6">
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center">
-                  <AlertTriangle className="h-8 w-8 text-red-600" />
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-muted-foreground">
+                  <AlertTriangle className="h-6 w-6 sm:h-8 sm:w-8 text-red-600 shrink-0" />
+                  <div className="ml-3 sm:ml-4">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground">
                       With Allergies
                     </p>
-                    <p className="text-2xl font-bold">
+                    <p className="text-lg sm:text-2xl font-bold">
                       {customersWithAlergies}
                     </p>
                   </div>
                 </div>
               </CardContent>
             </Card>
-            <Card>
-              <CardContent className="p-6">
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center">
-                  <Bell className="h-8 w-8 text-orange-600" />
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-muted-foreground">
+                  <Bell className="h-6 w-6 sm:h-8 sm:w-8 text-orange-600 shrink-0" />
+                  <div className="ml-3 sm:ml-4">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground">
                       Pending Reminders
                     </p>
-                    <p className="text-2xl font-bold">{pendingReminders}</p>
+                    <p className="text-lg sm:text-2xl font-bold">{pendingReminders}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
-            <Card>
-              <CardContent className="p-6">
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center">
-                  <DollarSign className="h-8 w-8 text-purple-600" />
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-muted-foreground">
+                  <DollarSign className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600 shrink-0" />
+                  <div className="ml-3 sm:ml-4">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground">
                       Outstanding Balance
                     </p>
-                    <p className="text-2xl font-bold">
+                    <p className="text-lg sm:text-2xl font-bold">
                       ${outstandingBalance.toLocaleString()}
                     </p>
                   </div>
@@ -983,7 +984,7 @@ export default function CustomerPage() {
           </div>
 
           {/* Customer Management Tabs */}
-          <div className="flex space-x-2 border-b overflow-x-auto">
+          <div className="flex space-x-2 border-b overflow-x-auto pb-2 scrollbar-hide">
             {customerTabs.map((tab) => (
               <Button
                 key={tab.id}
@@ -992,7 +993,7 @@ export default function CustomerPage() {
                 className="flex items-center space-x-2 whitespace-nowrap"
               >
                 <tab.icon className="h-4 w-4" />
-                <span>{tab.label}</span>
+                <span className="text-sm sm:text-base">{tab.label}</span>
               </Button>
             ))}
           </div>
@@ -1012,15 +1013,15 @@ export default function CustomerPage() {
                 <CardContent>
                   <div className="space-y-4">
                     {customersData.map((customer) => (
-                      <div key={customer.id} className="border rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-3">
-                          <h4 className="font-medium">
+                      <div key={customer.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+                          <h4 className="font-medium text-sm sm:text-base">
                             {customer.personalInfo.firstName}{" "}
                             {customer.personalInfo.lastName}
                           </h4>
                           <Badge>{customer.id}</Badge>
                         </div>
-                        <div className="grid grid-cols-3 gap-4 text-sm">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
                           <div>
                             <p className="font-medium text-red-600">
                               Allergies:
@@ -1194,6 +1195,7 @@ export default function CustomerPage() {
             onClose={() => setIsAddingCustomer(false)}
             onSave={handleSaveCustomer}
           />
+      </div>
     </div>
   );
 }

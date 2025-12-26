@@ -263,7 +263,6 @@ export default function InvoicesPage() {
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <ReceiptIcon className="h-8 w-8 text-blue-600" />
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Pharmacy Invoices</h1>
               <p className="text-sm text-gray-600">Manage prescription and OTC invoices, insurance claims, and payments</p>

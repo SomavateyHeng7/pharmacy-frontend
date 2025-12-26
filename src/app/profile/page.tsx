@@ -32,22 +32,24 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
+      <div className="mx-auto max-w-5xl space-y-6">
       {/* Top Bar */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => router.back()}
             aria-label="Back"
+            className="shrink-0"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
 
           <div>
-            <h1 className="text-3xl font-bold">Profile</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">Profile</h1>
+            <p className="text-sm sm:text-base text-gray-600 mt-1">
               Manage your account and pharmacy information
             </p>
           </div>
@@ -56,6 +58,7 @@ export default function ProfilePage() {
         <Button
           variant={isEditing ? "default" : "outline"}
           onClick={() => setIsEditing(!isEditing)}
+          className="w-full sm:w-auto"
         >
           {isEditing ? (
             <>
@@ -72,32 +75,32 @@ export default function ProfilePage() {
       </div>
 
       {/* Profile Overview */}
-      <Card>
-        <CardContent className="p-6 flex items-center gap-6">
-          <div className="h-20 w-20 rounded-full bg-blue-100 flex items-center justify-center">
-            <User className="h-10 w-10 text-blue-600" />
+      <Card className="hover:shadow-lg transition-shadow">
+        <CardContent className="p-4 sm:p-6 flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
+          <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+            <User className="h-8 w-8 sm:h-10 sm:w-10 text-blue-600" />
           </div>
 
-          <div className="flex-1">
-            <h2 className="text-xl font-semibold">{user.name}</h2>
-            <p className="text-muted-foreground">{user.role}</p>
-            <div className="mt-2 flex gap-2">
-              <Badge variant="outline">
+          <div className="flex-1 text-center sm:text-left">
+            <h2 className="text-lg sm:text-xl font-semibold">{user.name}</h2>
+            <p className="text-sm sm:text-base text-muted-foreground">{user.role}</p>
+            <div className="mt-2 flex flex-wrap gap-2 justify-center sm:justify-start">
+              <Badge variant="outline" className="text-xs">
                 <Shield className="h-3 w-3 mr-1" />
                 {user.license}
               </Badge>
-              <Badge>{user.status}</Badge>
+              <Badge className="text-xs">{user.status}</Badge>
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Personal Information */}
-      <Card>
+      <Card className="hover:shadow-lg transition-shadow">
         <CardHeader>
-          <CardTitle>Personal Information</CardTitle>
+          <CardTitle className="text-lg sm:text-xl">Personal Information</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           <div className="space-y-2">
             <Label>Full Name</Label>
             <Input defaultValue={user.name} disabled={!isEditing} />
@@ -149,20 +152,21 @@ export default function ProfilePage() {
       </Card> */}
 
       {/* Security */}
-      <Card>
+      <Card className="hover:shadow-lg transition-shadow">
         <CardHeader>
-          <CardTitle>Security</CardTitle>
+          <CardTitle className="text-lg sm:text-xl">Security</CardTitle>
         </CardHeader>
-        <CardContent className="flex items-center justify-between">
+        <CardContent className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <p className="font-medium">Password</p>
-            <p className="text-sm text-muted-foreground">
+            <p className="font-medium text-sm sm:text-base">Password</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Last updated 30 days ago
             </p>
           </div>
-          <Button variant="outline">Change Password</Button>
+          <Button variant="outline" className="w-full sm:w-auto">Change Password</Button>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

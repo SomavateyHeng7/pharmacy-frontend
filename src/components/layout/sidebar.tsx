@@ -101,6 +101,11 @@ export default function Sidebar() {
       icon: BarChart3,
       label: "Reports",
     },
+    {
+      href: "/superadmin",
+      icon: Users,
+      label: "Super Admin",
+    },
   ];
 
   return (

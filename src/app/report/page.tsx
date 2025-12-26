@@ -217,42 +217,42 @@ const monthlyTrends = [
 
 function DailySalesReport() {
   return (
-    <Card>
+    <Card className="shadow-md hover:shadow-lg transition">
       <CardHeader>
-        <CardTitle className="flex items-center">
-          <Receipt className="h-5 w-5 mr-2" />
+        <CardTitle className="flex items-center text-lg sm:text-xl">
+          <Receipt className="h-5 w-5 mr-2 flex-shrink-0" />
           Daily Sales Reports & Summaries
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           {dailySalesReport.map((day, index) => (
-            <div key={index} className="p-4 rounded-lg border">
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <h4 className="font-medium">{new Date(day.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h4>
-                  <p className="text-sm text-muted-foreground">{day.transactions} transactions</p>
+            <div key={index} className="p-3 sm:p-4 rounded-lg border hover:border-blue-300 transition">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                <div className="flex-1">
+                  <h4 className="font-medium text-sm sm:text-base">{new Date(day.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h4>
+                  <p className="text-xs sm:text-sm text-muted-foreground">{day.transactions} transactions</p>
                 </div>
-                <div className="text-right">
-                  <p className="text-lg font-bold text-green-600">${day.netSales.toLocaleString()}</p>
+                <div className="text-left sm:text-right">
+                  <p className="text-lg sm:text-xl font-bold text-green-600">${day.netSales.toLocaleString()}</p>
                   <p className="text-xs text-muted-foreground">Net Sales</p>
                 </div>
               </div>
-              <div className="grid grid-cols-4 gap-4 text-sm">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 text-sm">
                 <div className="text-center p-2 bg-blue-50 dark:bg-blue-950 rounded">
-                  <p className="font-medium">${day.cash.toLocaleString()}</p>
+                  <p className="font-medium text-sm sm:text-base">${day.cash.toLocaleString()}</p>
                   <p className="text-xs text-muted-foreground">Cash</p>
                 </div>
                 <div className="text-center p-2 bg-green-50 dark:bg-green-950 rounded">
-                  <p className="font-medium">${day.card.toLocaleString()}</p>
+                  <p className="font-medium text-sm sm:text-base">${day.card.toLocaleString()}</p>
                   <p className="text-xs text-muted-foreground">Card</p>
                 </div>
                 <div className="text-center p-2 bg-red-50 dark:bg-red-950 rounded">
-                  <p className="font-medium">${day.returns.toLocaleString()}</p>
+                  <p className="font-medium text-sm sm:text-base">${day.returns.toLocaleString()}</p>
                   <p className="text-xs text-muted-foreground">Returns</p>
                 </div>
                 <div className="text-center p-2 bg-purple-50 dark:bg-purple-950 rounded">
-                  <p className="font-medium">${day.revenue.toLocaleString()}</p>
+                  <p className="font-medium text-sm sm:text-base">${day.revenue.toLocaleString()}</p>
                   <p className="text-xs text-muted-foreground">Gross</p>
                 </div>
               </div>
@@ -942,33 +942,33 @@ function ForecastingReport() {
 
 function InventoryOverview() {
   return (
-    <Card>
+    <Card className="shadow-md hover:shadow-lg transition">
       <CardHeader>
-        <CardTitle className="flex items-center">
-          <Package className="h-5 w-5 mr-2" />
+        <CardTitle className="flex items-center text-lg sm:text-xl">
+          <Package className="h-5 w-5 mr-2 flex-shrink-0" />
           Inventory Overview
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          <div className="text-center p-3 rounded-lg bg-blue-50 dark:bg-blue-950">
-            <p className="text-xl font-bold text-blue-600">{inventoryReports.totalItems}</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+          <div className="text-center p-3 rounded-lg bg-blue-50 dark:bg-blue-950 hover:shadow-md transition">
+            <p className="text-lg sm:text-xl font-bold text-blue-600">{inventoryReports.totalItems}</p>
             <p className="text-xs text-muted-foreground">Total Items</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-red-50 dark:bg-red-950">
-            <p className="text-xl font-bold text-red-600">{inventoryReports.lowStock}</p>
+          <div className="text-center p-3 rounded-lg bg-red-50 dark:bg-red-950 hover:shadow-md transition">
+            <p className="text-lg sm:text-xl font-bold text-red-600">{inventoryReports.lowStock}</p>
             <p className="text-xs text-muted-foreground">Low Stock</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-orange-50 dark:bg-orange-950">
-            <p className="text-xl font-bold text-orange-600">{inventoryReports.expiring}</p>
+          <div className="text-center p-3 rounded-lg bg-orange-50 dark:bg-orange-950 hover:shadow-md transition">
+            <p className="text-lg sm:text-xl font-bold text-orange-600">{inventoryReports.expiring}</p>
             <p className="text-xs text-muted-foreground">Expiring Soon</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
-            <p className="text-xl font-bold text-gray-600">{inventoryReports.expired}</p>
+          <div className="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800 hover:shadow-md transition">
+            <p className="text-lg sm:text-xl font-bold text-gray-600">{inventoryReports.expired}</p>
             <p className="text-xs text-muted-foreground">Expired</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-green-50 dark:bg-green-950 md:col-span-2">
-            <p className="text-xl font-bold text-green-600">
+          <div className="text-center p-3 rounded-lg bg-green-50 dark:bg-green-950 col-span-2 sm:col-span-2 hover:shadow-md transition">
+            <p className="text-lg sm:text-xl font-bold text-green-600">
               ${inventoryReports.totalValue.toLocaleString()}
             </p>
             <p className="text-xs text-muted-foreground">Total Inventory Value</p>
@@ -981,38 +981,38 @@ function InventoryOverview() {
 
 function QuickActions() {
   return (
-    <Card>
+    <Card className="shadow-md hover:shadow-lg transition">
       <CardHeader>
-        <CardTitle className="flex items-center">
-          <FileText className="h-5 w-5 mr-2" />
+        <CardTitle className="flex items-center text-lg sm:text-xl">
+          <FileText className="h-5 w-5 mr-2 flex-shrink-0" />
           Report Actions
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <Button variant="outline" className="justify-start h-auto py-3 px-4 text-left">
+        <div className="grid grid-cols-1 gap-3">
+          <Button variant="outline" className="justify-start h-auto py-3 px-4 text-left hover:bg-blue-50 transition">
             <Download className="h-4 w-4 mr-3 shrink-0" />
-            <span className="whitespace-normal">Export Sales Report</span>
+            <span className="whitespace-normal text-sm">Export Sales Report</span>
           </Button>
-          <Button variant="outline" className="justify-start h-auto py-3 px-4 text-left">
+          <Button variant="outline" className="justify-start h-auto py-3 px-4 text-left hover:bg-blue-50 transition">
             <Download className="h-4 w-4 mr-3 shrink-0" />
-            <span className="whitespace-normal">Export Inventory Report</span>
+            <span className="whitespace-normal text-sm">Export Inventory Report</span>
           </Button>
-          <Button variant="outline" className="justify-start h-auto py-3 px-4 text-left">
+          <Button variant="outline" className="justify-start h-auto py-3 px-4 text-left hover:bg-blue-50 transition">
             <PieChart className="h-4 w-4 mr-3 shrink-0" />
-            <span className="whitespace-normal">Generate Analytics</span>
+            <span className="whitespace-normal text-sm">Generate Analytics</span>
           </Button>
-          <Button variant="outline" className="justify-start h-auto py-3 px-4 text-left">
+          <Button variant="outline" className="justify-start h-auto py-3 px-4 text-left hover:bg-blue-50 transition">
             <Calendar className="h-4 w-4 mr-3 shrink-0" />
-            <span className="whitespace-normal">Schedule Report</span>
+            <span className="whitespace-normal text-sm">Schedule Report</span>
           </Button>
-          <Button variant="outline" className="justify-start h-auto py-3 px-4 text-left">
+          <Button variant="outline" className="justify-start h-auto py-3 px-4 text-left hover:bg-blue-50 transition">
             <Filter className="h-4 w-4 mr-3 shrink-0" />
-            <span className="whitespace-normal">Custom Report</span>
+            <span className="whitespace-normal text-sm">Custom Report</span>
           </Button>
-          <Button variant="outline" className="justify-start h-auto py-3 px-4 text-left">
+          <Button variant="outline" className="justify-start h-auto py-3 px-4 text-left hover:bg-blue-50 transition">
             <Eye className="h-4 w-4 mr-3 shrink-0" />
-            <span className="whitespace-normal">View Details</span>
+            <span className="whitespace-normal text-sm">View Details</span>
           </Button>
         </div>
       </CardContent>
@@ -1034,49 +1034,56 @@ export default function ReportsPage() {
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Reports & Analytics</h1>
-          <p className="text-muted-foreground">
-            Comprehensive insights into your pharmacy performance & financials
-          </p>
+    <div className="min-h-screen from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">Reports & Analytics</h1>
+            <p className="text-sm sm:text-base text-gray-600 mt-1">
+              Comprehensive insights into your pharmacy performance & financials
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+            <Button variant="outline" className="w-full sm:w-auto">
+              <Calendar className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">Date Range</span>
+              <span className="sm:hidden">Range</span>
+            </Button>
+            <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
+              <Download className="h-4 w-4 mr-2" />
+              Export
+            </Button>
+          </div>
         </div>
-        <div className="flex space-x-2">
-          <Button variant="outline">
-            <Calendar className="h-4 w-4 mr-2" />
-            Date Range
-          </Button>
-          <Button>
-            <Download className="h-4 w-4 mr-2" />
-            Export All
-          </Button>
+
+        {/* Report Tabs */}
+        <div className="flex space-x-2 border-b overflow-x-auto pb-2 scrollbar-hide">
+          {reportTabs.map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <Button
+                key={tab.id}
+                variant={activeTab === tab.id ? 'default' : 'ghost'}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center space-x-2 whitespace-nowrap min-w-fit px-3 sm:px-4 ${
+                  activeTab === tab.id 
+                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white' 
+                    : 'hover:bg-gray-100'
+                }`}
+              >
+                <Icon className="h-4 w-4" />
+                <span className="text-sm">{tab.label}</span>
+              </Button>
+            );
+          })}
         </div>
-      </div>
 
-      {/* Report Tabs */}
-      <div className="flex space-x-2 border-b overflow-x-auto">
-        {reportTabs.map((tab) => {
-          const Icon = tab.icon;
-          return (
-            <Button
-              key={tab.id}
-            variant={activeTab === tab.id ? 'default' : 'ghost'}
-            onClick={() => setActiveTab(tab.id)}
-            className="flex items-center space-x-2 whitespace-nowrap"
-          >
-            <Icon className="h-4 w-4" />
-            <span>{tab.label}</span>
-          </Button>
-          );
-        })}
-      </div>
-
-      {/* Report Content */}
-      {activeTab === 'overview' && (
+        {/* Report Content */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-6 lg:p-8">
+          {activeTab === 'overview' && (
             <div className="space-y-6">
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-3">
                 <div className="lg:col-span-2">
                   <SalesReport />
                 </div>
@@ -1084,7 +1091,7 @@ export default function ReportsPage() {
                   <QuickActions />
                 </div>
               </div>
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
                 <TopSellingMedicinesReport />
                 <InventoryOverview />
               </div>
@@ -1095,7 +1102,7 @@ export default function ReportsPage() {
             <div className="space-y-6">
               <SalesReport />
               <DailySalesReport />
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
                 <TopSellingMedicinesReport />
                 <TopSuppliersReport />
               </div>
@@ -1104,7 +1111,7 @@ export default function ReportsPage() {
 
           {activeTab === 'financial' && (
             <div className="space-y-6">
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
                 <ProfitLossStatement />
                 <ExpenseTrackingReport />
               </div>
@@ -1122,7 +1129,7 @@ export default function ReportsPage() {
           {activeTab === 'profitability' && (
             <div className="space-y-6">
               <ProfitabilityReport />
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
                 <TopSellingMedicinesReport />
                 <TopSuppliersReport />
               </div>
@@ -1132,7 +1139,7 @@ export default function ReportsPage() {
           {/* {activeTab === 'forecasting' && (
             <div className="space-y-6">
               <ForecastingReport />
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
                 <SalesReport />
                 <InventoryOverview />
               </div>
@@ -1142,12 +1149,14 @@ export default function ReportsPage() {
           {/* {activeTab === 'accounting' && (
             <div className="space-y-6">
               <AccountingIntegrationsReport />
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
                 <TaxComputationReport />
                 <ExpenseTrackingReport />
               </div>
             </div>
           )} */}
+        </div>
+      </div>
     </div>
   );
 }

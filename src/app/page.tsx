@@ -95,68 +95,75 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Quick Stats */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-        <Card>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Page Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">Welcome back! Here's your pharmacy overview</p>
+        </div>
+
+        {/* Quick Stats */}
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
+          <Card className="hover:shadow-lg transition">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">${dashboardStats.totalRevenue.toLocaleString()}</div>
+              <div className="text-xl sm:text-2xl font-bold">${dashboardStats.totalRevenue.toLocaleString()}</div>
               <p className="text-xs text-muted-foreground">
                 +{dashboardStats.dailyGrowth}% from yesterday
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="hover:shadow-lg transition">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Sales Today</CardTitle>
               <ShoppingCart className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{dashboardStats.totalSales}</div>
+              <div className="text-xl sm:text-2xl font-bold">{dashboardStats.totalSales}</div>
               <p className="text-xs text-muted-foreground">
                 {dashboardStats.pendingOrders} orders pending
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="hover:shadow-lg transition">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Prescriptions</CardTitle>
               <FileCheck className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{dashboardStats.totalPrescriptions}</div>
+              <div className="text-xl sm:text-2xl font-bold">{dashboardStats.totalPrescriptions}</div>
               <p className="text-xs text-muted-foreground">
                 {dashboardStats.pendingVerification} pending verification
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="hover:shadow-lg transition">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Customers</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{dashboardStats.totalCustomers}</div>
+              <div className="text-xl sm:text-2xl font-bold">{dashboardStats.totalCustomers}</div>
               <p className="text-xs text-muted-foreground">
                 Active customer base
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="hover:shadow-lg transition">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Inventory Items</CardTitle>
               <Package className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{dashboardStats.totalProducts}</div>
+              <div className="text-xl sm:text-2xl font-bold">{dashboardStats.totalProducts}</div>
               <p className="text-xs text-muted-foreground">
                 Total products in stock
               </p>
@@ -165,11 +172,11 @@ export default function Dashboard() {
         </div>
 
         {/* Alerts Section */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-6">
-          <Card className="border-red-200 dark:border-red-800">
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          <Card className="border-red-200 dark:border-red-800 hover:shadow-lg transition">
             <CardHeader>
-              <CardTitle className="flex items-center text-red-600">
-                <AlertTriangle className="h-5 w-5 mr-2" />
+              <CardTitle className="flex items-center text-red-600 text-base sm:text-lg">
+                <AlertTriangle className="h-5 w-5 mr-2 flex-shrink-0" />
                 Low Stock Alert
               </CardTitle>
             </CardHeader>
@@ -177,8 +184,8 @@ export default function Dashboard() {
               <div className="space-y-2">
                 {lowStockItems.slice(0, 3).map((item, index) => (
                   <div key={index} className="flex items-center justify-between">
-                    <span className="text-sm">{item.name}</span>
-                    <Badge variant={item.status === 'critical' ? 'destructive' : 'secondary'}>
+                    <span className="text-sm truncate mr-2">{item.name}</span>
+                    <Badge variant={item.status === 'critical' ? 'destructive' : 'secondary'} className="flex-shrink-0">
                       {item.current} left
                     </Badge>
                   </div>
@@ -190,10 +197,10 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="border-orange-200 dark:border-orange-800">
+          <Card className="border-orange-200 dark:border-orange-800 hover:shadow-lg transition">
             <CardHeader>
-              <CardTitle className="flex items-center text-orange-600">
-                <Calendar className="h-5 w-5 mr-2" />
+              <CardTitle className="flex items-center text-orange-600 text-base sm:text-lg">
+                <Calendar className="h-5 w-5 mr-2 flex-shrink-0" />
                 Expiring Soon
               </CardTitle>
             </CardHeader>
@@ -265,7 +272,7 @@ export default function Dashboard() {
 
         {/* Recent Activity */}
         <div className="grid gap-4 md:grid-cols-4">
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle>Recent Sales</CardTitle>
             </CardHeader>
@@ -290,9 +297,9 @@ export default function Dashboard() {
                 ))}
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Stethoscope className="h-4 w-4 mr-2" />
@@ -322,9 +329,9 @@ export default function Dashboard() {
                 ))}
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Users className="h-4 w-4 mr-2" />
@@ -349,7 +356,7 @@ export default function Dashboard() {
                 ))}
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
           <Card>
             <CardHeader>
@@ -392,6 +399,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </div>
+      </div>
     </div>
   );
 }

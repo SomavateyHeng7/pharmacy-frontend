@@ -274,10 +274,10 @@ function DrugDetailModal({ drug, batches, purchaseOrders, isOpen, onClose, onEdi
                       {(((drug.sellingPrice - drug.unitPrice) / drug.sellingPrice) * 100).toFixed(1)}%
                     </span>
                   </div>
-                  <div className="flex justify-between">
+                  {/* <div className="flex justify-between">
                     <span className="text-muted-foreground">Total Value:</span>
                     <span className="font-medium">${(drug.currentStock * drug.sellingPrice).toFixed(2)}</span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               
@@ -1249,74 +1249,74 @@ function InventoryMetrics({ drugs, batches }: { drugs: Drug[], batches: Batch[] 
   const refrigeratedItems = drugs.filter(drug => drug.refrigerationRequired).length;
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-      <Card>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-3 sm:gap-4">
+      <Card className="hover:shadow-lg transition-shadow">
         <CardContent className="p-4">
           <div className="flex items-center">
-            <Package className="h-8 w-8 text-blue-600" />
+            <Package className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 shrink-0" />
             <div className="ml-3">
-              <p className="text-sm font-medium text-muted-foreground">Total Products</p>
-              <p className="text-xl font-bold">{totalProducts}</p>
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground">Total Products</p>
+              <p className="text-lg sm:text-xl font-bold">{totalProducts}</p>
             </div>
           </div>
         </CardContent>
       </Card>
       
-      <Card>
+      <Card className="hover:shadow-lg transition-shadow">
         <CardContent className="p-4">
           <div className="flex items-center">
-            <AlertTriangle className="h-8 w-8 text-red-600" />
+            <AlertTriangle className="h-6 w-6 sm:h-8 sm:w-8 text-red-600 shrink-0" />
             <div className="ml-3">
-              <p className="text-sm font-medium text-muted-foreground">Low Stock</p>
-              <p className="text-xl font-bold">{lowStockCount}</p>
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground">Low Stock</p>
+              <p className="text-lg sm:text-xl font-bold">{lowStockCount}</p>
             </div>
           </div>
         </CardContent>
       </Card>
       
-      <Card>
+      <Card className="hover:shadow-lg transition-shadow">
         <CardContent className="p-4">
           <div className="flex items-center">
-            <Calendar className="h-8 w-8 text-orange-600" />
+            <Calendar className="h-6 w-6 sm:h-8 sm:w-8 text-orange-600 shrink-0" />
             <div className="ml-3">
-              <p className="text-sm font-medium text-muted-foreground">Expiring Soon</p>
-              <p className="text-xl font-bold">{expiringBatches}</p>
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground">Expiring Soon</p>
+              <p className="text-lg sm:text-xl font-bold">{expiringBatches}</p>
             </div>
           </div>
         </CardContent>
       </Card>
       
-      <Card>
+      <Card className="hover:shadow-lg transition-shadow">
         <CardContent className="p-4">
           <div className="flex items-center">
-            <XCircle className="h-8 w-8 text-red-700" />
+            <XCircle className="h-6 w-6 sm:h-8 sm:w-8 text-red-700 shrink-0" />
             <div className="ml-3">
-              <p className="text-sm font-medium text-muted-foreground">Expired</p>
-              <p className="text-xl font-bold">{expiredBatches}</p>
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground">Expired</p>
+              <p className="text-lg sm:text-xl font-bold">{expiredBatches}</p>
             </div>
           </div>
         </CardContent>
       </Card>
       
-      <Card>
+      {/* <Card className="hover:shadow-lg transition-shadow">
         <CardContent className="p-4">
           <div className="flex items-center">
-            <DollarSign className="h-8 w-8 text-green-600" />
+            <DollarSign className="h-6 w-6 sm:h-8 sm:w-8 text-green-600 shrink-0" />
             <div className="ml-3">
-              <p className="text-sm font-medium text-muted-foreground">Total Value</p>
-              <p className="text-xl font-bold">${totalValue.toLocaleString()}</p>
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground">Total Value</p>
+              <p className="text-lg sm:text-xl font-bold">${totalValue.toLocaleString()}</p>
             </div>
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
       
-      <Card>
+      <Card className="hover:shadow-lg transition-shadow">
         <CardContent className="p-4">
           <div className="flex items-center">
-            <Archive className="h-8 w-8 text-purple-600" />
+            <Archive className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600 shrink-0" />
             <div className="ml-3">
-              <p className="text-sm font-medium text-muted-foreground">Controlled</p>
-              <p className="text-xl font-bold">{controlledSubstances}</p>
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground">Controlled</p>
+              <p className="text-lg sm:text-xl font-bold">{controlledSubstances}</p>
             </div>
           </div>
         </CardContent>
@@ -1577,20 +1577,21 @@ export function DrugInventory() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
         <div>
-          <h2 className="text-3xl font-bold">Drug Inventory Management</h2>
-          <p className="text-muted-foreground">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">Drug Inventory Management</h2>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">
             Comprehensive drug tracking with batch management, barcode scanning, and automated alerts
           </p>
         </div>
-        <div className="flex space-x-2">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           <Button 
             onClick={() => setShowBarcodeScanner(true)}
             variant="outline"
-            className="border-blue-600 text-blue-600 hover:bg-blue-50"
+            className="w-full sm:w-auto border-blue-600 text-blue-600 hover:bg-blue-50"
           >
             <ScanLine className="w-4 h-4 mr-2" />
             Scan Barcode
@@ -1598,12 +1599,12 @@ export function DrugInventory() {
           <Button 
             onClick={() => setIsUploadingExcel(true)}
             variant="outline"
-            className="border-green-600 text-green-600 hover:bg-green-50"
+            className="w-full sm:w-auto border-green-600 text-green-600 hover:bg-green-50"
           >
             <Upload className="w-4 h-4 mr-2" />
             Import Excel
           </Button>
-          <Button onClick={() => setIsAddingDrug(true)}>
+          <Button onClick={() => setIsAddingDrug(true)} className="w-full sm:w-auto">
             <Plus className="w-4 h-4 mr-2" />
             Add Drug
           </Button>
@@ -1614,7 +1615,7 @@ export function DrugInventory() {
       <InventoryMetrics drugs={drugs} batches={batches} />
 
       {/* Tabs */}
-      <div className="flex space-x-2 border-b">
+      <div className="flex space-x-2 border-b overflow-x-auto pb-2 scrollbar-hide">
         {[{id: 'inventory', label: 'Drug Inventory', icon: Package}, 
           {id: 'batches', label: 'Batch Tracking', icon: Calendar}, 
           {id: 'alerts', label: 'Stock Alerts', icon: Bell}].map((tab) => (
@@ -1622,17 +1623,17 @@ export function DrugInventory() {
             key={tab.id}
             variant={activeTab === tab.id ? 'default' : 'ghost'}
             onClick={() => setActiveTab(tab.id)}
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-2 whitespace-nowrap"
           >
             <tab.icon className="h-4 w-4" />
-            <span>{tab.label}</span>
+            <span className="text-sm sm:text-base">{tab.label}</span>
           </Button>
         ))}
       </div>
 
       {/* Search and Filters */}
-      <div className="flex flex-wrap gap-4">
-        <div className="relative flex-1 min-w-64">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+        <div className="relative flex-1 min-w-full sm:min-w-64">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search by name, manufacturer, barcode, or QR code..."
@@ -1643,7 +1644,7 @@ export function DrugInventory() {
         </div>
         
         <select 
-          className="px-3 py-2 border rounded-md"
+          className="px-3 py-2 border rounded-md text-sm sm:text-base"
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value)}
         >
@@ -1653,7 +1654,7 @@ export function DrugInventory() {
         </select>
 
         <select 
-          className="px-3 py-2 border rounded-md"
+          className="px-3 py-2 border rounded-md text-sm sm:text-base"
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
         >
@@ -1662,7 +1663,7 @@ export function DrugInventory() {
           ))}
         </select>
         
-        <Button variant="outline">
+        <Button variant="outline" className="w-full sm:w-auto">
           <Filter className="h-4 w-4 mr-2" />
           More Filters
         </Button>
@@ -1670,7 +1671,7 @@ export function DrugInventory() {
 
       {/* Content based on active tab */}
       {activeTab === 'inventory' && (
-        <div className="grid gap-6 lg:grid-cols-4">
+        <div className="grid gap-6 grid-cols-1 lg:grid-cols-4">
           <div className="lg:col-span-3">
             {/* Drug List */}
             <div className="grid gap-4">
@@ -1683,19 +1684,19 @@ export function DrugInventory() {
                 return (
                   <Card 
                     key={drug.id} 
-                    className="cursor-pointer hover:shadow-md transition-shadow"
+                    className="cursor-pointer hover:shadow-lg transition-all"
                     onClick={() => handleDrugClick(drug)}
                   >
                     <CardContent className="pt-6">
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div className="space-y-2 flex-1">
-                          <div className="flex items-center space-x-2">
-                            <h3 className="font-semibold text-lg">{drug.name}</h3>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h3 className="font-semibold text-base sm:text-lg">{drug.name}</h3>
                             {getStockBadge(stockStatus)}
-                            {drug.controlled_substance && <Badge variant="outline" className="border-purple-500 text-purple-600">Controlled</Badge>}
-                            {drug.refrigerationRequired && <Badge variant="outline" className="border-blue-500 text-blue-600">Refrigerated</Badge>}
+                            {drug.controlled_substance && <Badge variant="outline" className="border-purple-500 text-purple-600 text-xs">Controlled</Badge>}
+                            {drug.refrigerationRequired && <Badge variant="outline" className="border-blue-500 text-blue-600 text-xs">Refrigerated</Badge>}
                           </div>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-xs sm:text-sm text-muted-foreground">
                             {drug.genericName} • {drug.strength} • {drug.form}
                           </p>
                           <p className="text-sm text-muted-foreground">
@@ -1928,6 +1929,7 @@ export function DrugInventory() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
