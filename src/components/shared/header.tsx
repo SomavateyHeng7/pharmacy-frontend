@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Bell } from "lucide-react";
 import {ModeToggle} from "@/components/mode-toggle";
+import Link from "next/link";
 
 
 export default function Header() {
@@ -18,11 +19,13 @@ export default function Header() {
             </p>
           </div>
           <div className="flex items-center space-x-4">
-            <Button variant="outline" size="sm">
-              <Bell className="h-4 w-4 mr-2" />
-              Notifications
-              <Badge variant="destructive" className="ml-2">3</Badge>
-            </Button>
+            <Link href="/notifications">
+              <Button variant="outline" size="sm">
+                <Bell className="h-4 w-4 mr-2" />
+                Notifications
+                <Badge variant="destructive" className="ml-2">3</Badge>
+              </Button>
+            </Link>
             <ModeToggle />
           </div>
         </div>

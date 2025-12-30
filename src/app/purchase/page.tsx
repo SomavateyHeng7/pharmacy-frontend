@@ -1157,7 +1157,7 @@ function DeliveryPerformanceModal({ isOpen, onClose }: { isOpen: boolean; onClos
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-6xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-semibold">Delivery Performance Analytics</h3>
-          <Button variant="ghost" onClick={onClose}>×</Button>
+          <Button variant="ghost" onClick={onClose}>X</Button>
         </div>
 
         {/* Key Metrics */}
@@ -1258,10 +1258,9 @@ function DeliveryPerformanceModal({ isOpen, onClose }: { isOpen: boolean; onClos
             </div>
           </CardContent>
         </Card>
-
-        <div className="flex justify-end">
+        {/* <div className="flex justify-end">
           <Button onClick={onClose}>Close</Button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
@@ -1433,6 +1432,383 @@ function ApprovalHistoryModal({ isOpen, onClose, order }: { isOpen: boolean; onC
 
         <div className="flex justify-end mt-6">
           <Button onClick={onClose}>Close</Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Single Order Approval Modal
+function SingleApprovalModal({ isOpen, onClose, order, action, onSubmit }: { 
+  isOpen: boolean; 
+  onClose: () => void; 
+  order: any; 
+  action: 'approve' | 'reject';
+  onSubmit: (comments: string) => void;
+}) {
+  const [comments, setComments] = useState('');
+
+  if (!isOpen || !order) return null;
+
+  const handleSubmit = () => {
+    onSubmit(comments);
+    setComments('');
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-semibold">
+            {action === 'approve' ? 'Approve' : 'Reject'} Purchase Order
+          </h3>
+          <Button variant="ghost" onClick={onClose}>×</Button>
+        </div>
+
+        <div className="space-y-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Order ID</Label>
+                  <p className="font-bold">{order.id}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Supplier</Label>
+                  <p className="font-bold">{order.supplierName}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Order Value</Label>
+                  <p className="text-lg font-bold text-green-600">${order.grandTotal.toLocaleString()}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Approval Level</Label>
+                  <Badge>{order.approvalLevel}</Badge>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Priority</Label>
+                  <Badge variant={order.priority === 'High' || order.priority === 'Urgent' ? 'destructive' : 'outline'}>
+                    {order.priority}
+                  </Badge>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Items</Label>
+                  <p>{order.items.length} products</p>
+                </div>
+              </div>
+              {order.notes && (
+                <div className="mt-4">
+                  <Label className="text-sm font-medium">Order Notes</Label>
+                  <p className="text-sm text-muted-foreground">{order.notes}</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <div>
+            <Label>{action === 'approve' ? 'Approval Comments' : 'Rejection Reason'} *</Label>
+            <Textarea
+              rows={4}
+              value={comments}
+              onChange={(e) => setComments(e.target.value)}
+              placeholder={action === 'approve' 
+                ? 'Enter approval comments (e.g., "Approved for urgent patient needs")...' 
+                : 'Enter rejection reason (e.g., "Budget exceeded", "Supplier not approved")...'}
+              className="mt-1"
+            />
+          </div>
+
+          {action === 'approve' && (
+            <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
+              <div className="flex items-start space-x-2">
+                <AlertTriangle className="h-5 w-5 text-blue-600 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium">Approval Confirmation</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    By approving this order, you confirm that it meets budget requirements and business needs. 
+                    {order.approvalLevel === 'Executive' && ' This is a high-value order requiring executive approval.'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {action === 'reject' && (
+            <div className="bg-red-50 dark:bg-red-950 p-4 rounded-lg">
+              <div className="flex items-start space-x-2">
+                <XCircle className="h-5 w-5 text-red-600 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-red-600">Rejection Notice</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    This order will be rejected and the requester will be notified. Please provide a clear reason.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="flex justify-end space-x-2 mt-6">
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button 
+            onClick={handleSubmit}
+            disabled={!comments.trim()}
+            className={action === 'reject' ? 'bg-red-600 hover:bg-red-700' : ''}
+          >
+            {action === 'approve' ? (
+              <>
+                <CheckCircle className="h-4 w-4 mr-2" />
+                Confirm Approval
+              </>
+            ) : (
+              <>
+                <XCircle className="h-4 w-4 mr-2" />
+                Confirm Rejection
+              </>
+            )}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Receive Goods Modal
+function ReceiveGoodsModal({ isOpen, onClose, order, onSubmit }: {
+  isOpen: boolean;
+  onClose: () => void;
+  order: any;
+  onSubmit: (data: any) => void;
+}) {
+  const [receivedItems, setReceivedItems] = useState<any[]>([]);
+  const [notes, setNotes] = useState('');
+  const [receivedBy, setReceivedBy] = useState('');
+  const [actualDeliveryDate, setActualDeliveryDate] = useState(new Date().toISOString().split('T')[0]);
+  const [conditionIssues, setConditionIssues] = useState('');
+
+  if (!isOpen || !order) return null;
+
+  // Initialize received items from order
+  React.useEffect(() => {
+    if (order && order.items) {
+      setReceivedItems(order.items.map((item: any) => ({
+        ...item,
+        receivedQuantity: item.quantity,
+        damagedQuantity: 0,
+        condition: 'good'
+      })));
+    }
+  }, [order]);
+
+  const handleSubmit = () => {
+    onSubmit({
+      receivedItems,
+      notes,
+      receivedBy,
+      actualDeliveryDate,
+      conditionIssues
+    });
+    onClose();
+  };
+
+  const allItemsReceived = receivedItems.every(item => item.receivedQuantity > 0);
+  const hasDamage = receivedItems.some(item => item.damagedQuantity > 0 || item.condition !== 'good');
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-semibold">Receive Goods - {order.id}</h3>
+          <Button variant="ghost" onClick={onClose}>×</Button>
+        </div>
+
+        <div className="space-y-6">
+          {/* Order Info */}
+          <Card>
+            <CardContent className="p-4">
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Supplier</Label>
+                  <p className="font-bold">{order.supplierName}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Order Date</Label>
+                  <p>{order.orderDate}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Expected Delivery</Label>
+                  <p>{order.expectedDelivery}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Delivery Details */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label>Actual Delivery Date *</Label>
+              <Input
+                type="date"
+                value={actualDeliveryDate}
+                onChange={(e) => setActualDeliveryDate(e.target.value)}
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label>Received By *</Label>
+              <Input
+                value={receivedBy}
+                onChange={(e) => setReceivedBy(e.target.value)}
+                placeholder="Enter receiver name"
+                className="mt-1"
+              />
+            </div>
+          </div>
+
+          {/* Items Verification */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Verify Received Items</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {receivedItems.map((item, index) => (
+                  <div key={index} className="p-4 border rounded-lg space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-medium">{item.productName}</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Product ID: {item.productId} • Ordered: {item.quantity} units
+                        </p>
+                      </div>
+                      <Badge>{item.urgency}</Badge>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-4">
+                      <div>
+                        <Label className="text-sm">Received Quantity</Label>
+                        <Input
+                          type="number"
+                          value={item.receivedQuantity}
+                          onChange={(e) => {
+                            const newItems = [...receivedItems];
+                            newItems[index].receivedQuantity = parseInt(e.target.value) || 0;
+                            setReceivedItems(newItems);
+                          }}
+                          min={0}
+                          max={item.quantity}
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-sm">Damaged Quantity</Label>
+                        <Input
+                          type="number"
+                          value={item.damagedQuantity}
+                          onChange={(e) => {
+                            const newItems = [...receivedItems];
+                            newItems[index].damagedQuantity = parseInt(e.target.value) || 0;
+                            setReceivedItems(newItems);
+                          }}
+                          min={0}
+                          max={item.receivedQuantity}
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-sm">Condition</Label>
+                        <select
+                          value={item.condition}
+                          onChange={(e) => {
+                            const newItems = [...receivedItems];
+                            newItems[index].condition = e.target.value;
+                            setReceivedItems(newItems);
+                          }}
+                          className="w-full mt-1 p-2 border rounded-md"
+                        >
+                          <option value="good">Good</option>
+                          <option value="acceptable">Acceptable</option>
+                          <option value="damaged">Damaged</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {(item.receivedQuantity !== item.quantity || item.damagedQuantity > 0) && (
+                      <div className="bg-yellow-50 dark:bg-yellow-950 p-2 rounded flex items-center space-x-2">
+                        <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                        <span className="text-sm text-yellow-600">
+                          Quantity mismatch detected
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Condition Issues */}
+          {hasDamage && (
+            <div>
+              <Label>Condition Issues / Damage Report *</Label>
+              <Textarea
+                rows={3}
+                value={conditionIssues}
+                onChange={(e) => setConditionIssues(e.target.value)}
+                placeholder="Describe any damage, missing items, or quality issues..."
+                className="mt-1"
+              />
+            </div>
+          )}
+
+          {/* Additional Notes */}
+          <div>
+            <Label>Receiving Notes</Label>
+            <Textarea
+              rows={2}
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Any additional notes about the delivery..."
+              className="mt-1"
+            />
+          </div>
+
+          {/* Status Summary */}
+          <Card className="bg-blue-50 dark:bg-blue-950">
+            <CardContent className="p-4">
+              <div className="flex items-start space-x-2">
+                <Package className="h-5 w-5 text-blue-600 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium">Receiving Summary</p>
+                  <div className="mt-2 space-y-1">
+                    <p className="text-xs">
+                      Total Items: {receivedItems.length} • 
+                      Fully Received: {receivedItems.filter(i => i.receivedQuantity === i.quantity).length} • 
+                      Damaged: {receivedItems.filter(i => i.damagedQuantity > 0).length}
+                    </p>
+                    {!allItemsReceived && (
+                      <p className="text-xs text-yellow-600">
+                        <AlertTriangle className="h-3 w-3 inline mr-1" />
+                        Some items have quantity discrepancies
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="flex justify-end space-x-2 mt-6">
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button 
+            onClick={handleSubmit}
+            disabled={!receivedBy.trim() || (hasDamage && !conditionIssues.trim())}
+          >
+            <CheckCircle className="h-4 w-4 mr-2" />
+            Confirm Receipt
+          </Button>
         </div>
       </div>
     </div>
@@ -2135,6 +2511,11 @@ export default function PurchasePage() {
   const [showApprovalHistory, setShowApprovalHistory] = useState(false);
   const [showTrackingModal, setShowTrackingModal] = useState(false);
   const [showPerformanceModal, setShowPerformanceModal] = useState(false);
+  
+  // New modals for approval workflow
+  const [showSingleApprovalModal, setShowSingleApprovalModal] = useState(false);
+  const [approvalAction, setApprovalAction] = useState<'approve' | 'reject'>('approve');
+  const [showReceiveGoodsModal, setShowReceiveGoodsModal] = useState(false);
 
   const tabs = [
     { id: 'orders', label: 'Purchase Orders', icon: ShoppingCart },
@@ -2193,6 +2574,36 @@ export default function PurchasePage() {
     if (amount < approvalRules.autoApproval.threshold) return 0;
     if (amount < approvalRules.managerApproval.threshold) return 1;
     return 2;
+  };
+
+  // Handlers for approval workflow
+  const handleApproveOrder = (order: any) => {
+    setSelectedOrder(order);
+    setApprovalAction('approve');
+    setShowSingleApprovalModal(true);
+  };
+
+  const handleRejectOrder = (order: any) => {
+    setSelectedOrder(order);
+    setApprovalAction('reject');
+    setShowSingleApprovalModal(true);
+  };
+
+  const handleApprovalSubmit = (comments: string) => {
+    console.log(`${approvalAction} order ${selectedOrder.id}:`, comments);
+    // TODO: API call to approve/reject order
+    // toast.success(`Order ${approvalAction === 'approve' ? 'approved' : 'rejected'} successfully`);
+  };
+
+  const handleReceiveGoods = (order: any) => {
+    setSelectedOrder(order);
+    setShowReceiveGoodsModal(true);
+  };
+
+  const handleReceiveGoodsSubmit = (data: any) => {
+    console.log('Receive goods data:', data);
+    // TODO: API call to mark order as received with data
+    // toast.success('Goods received successfully');
   };
 
   return (
@@ -2308,10 +2719,34 @@ export default function PurchasePage() {
                           <Eye className="h-4 w-4 mr-2" />
                           View Details
                         </Button>
-                        <Button variant="outline" size="sm">
-                          <Copy className="h-4 w-4 mr-2" />
-                          Duplicate
-                        </Button>
+                        {(order.status === 'In Transit' || order.status === 'Delivered') && !order.actualDelivery && (
+                          <Button 
+                            size="sm"
+                            onClick={() => handleReceiveGoods(order)}
+                          >
+                            <Package className="h-4 w-4 mr-2" />
+                            Receive Goods
+                          </Button>
+                        )}
+                        {order.status === 'Pending Approval' && (
+                          <>
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => handleRejectOrder(order)}
+                            >
+                              <XCircle className="h-4 w-4 mr-2" />
+                              Reject
+                            </Button>
+                            <Button 
+                              size="sm"
+                              onClick={() => handleApproveOrder(order)}
+                            >
+                              <CheckCircle className="h-4 w-4 mr-2" />
+                              Approve
+                            </Button>
+                          </>
+                        )}
                         <Button variant="outline" size="sm">
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
@@ -2465,11 +2900,18 @@ export default function PurchasePage() {
                           <FileText className="h-4 w-4 mr-2" />
                           History
                         </Button>
-                        <Button size="sm" variant="outline">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => handleRejectOrder(order)}
+                        >
                           <XCircle className="h-4 w-4 mr-2" />
                           Reject
                         </Button>
-                        <Button size="sm">
+                        <Button 
+                          size="sm"
+                          onClick={() => handleApproveOrder(order)}
+                        >
                           <CheckCircle className="h-4 w-4 mr-2" />
                           Approve
                         </Button>
@@ -2558,7 +3000,7 @@ export default function PurchasePage() {
             </Card>
 
             {/* Upcoming Needs */}
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle>Forecasted Purchase Needs</CardTitle>
               </CardHeader>
@@ -2587,7 +3029,7 @@ export default function PurchasePage() {
                     })}
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
         )}
 
@@ -3000,6 +3442,27 @@ export default function PurchasePage() {
       <DeliveryPerformanceModal
         isOpen={showPerformanceModal}
         onClose={() => setShowPerformanceModal(false)}
+      />
+
+      <SingleApprovalModal
+        isOpen={showSingleApprovalModal}
+        onClose={() => {
+          setShowSingleApprovalModal(false);
+          setSelectedOrder(null);
+        }}
+        order={selectedOrder}
+        action={approvalAction}
+        onSubmit={handleApprovalSubmit}
+      />
+
+      <ReceiveGoodsModal
+        isOpen={showReceiveGoodsModal}
+        onClose={() => {
+          setShowReceiveGoodsModal(false);
+          setSelectedOrder(null);
+        }}
+        order={selectedOrder}
+        onSubmit={handleReceiveGoodsSubmit}
       />
     </div>
   );

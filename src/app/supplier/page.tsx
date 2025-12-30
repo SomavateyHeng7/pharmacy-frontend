@@ -671,7 +671,7 @@ export default function SupplierPage() {
   const totalSpent = suppliersData.reduce((sum, s) => sum + s.totalSpent, 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
@@ -682,7 +682,11 @@ export default function SupplierPage() {
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-            <Button variant="outline" className="w-full sm:w-auto">
+            <Button 
+              variant="outline" 
+              className="w-full sm:w-auto"
+              onClick={() => alert('Export functionality to be implemented')}
+            >
               <Download className="h-4 w-4 mr-2" />
               Export Data
             </Button>
@@ -831,6 +835,75 @@ export default function SupplierPage() {
             </div>
           </div>
         )}
+
+        {/* Purchase Orders Tab */}
+        {activeTab === 'orders' && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Purchase Orders</h3>
+              <Button onClick={() => setShowCreateOrderModal(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                New Order
+              </Button>
+            </div>
+            <Card>
+              <CardContent className="p-6">
+                <p className="text-muted-foreground">Purchase orders list will be displayed here</p>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Performance Tab */}
+        {activeTab === 'performance' && (
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold">Supplier Performance Analytics</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Delivery Performance</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">On-time delivery metrics and analytics</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Quality Metrics</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">Product quality and return rates</p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
+
+        {/* Auto Reorder Tab */}
+        {activeTab === 'reorder' && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Automatic Reorder Rules</h3>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Rule
+              </Button>
+            </div>
+            <Card>
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  <p className="text-muted-foreground">Configure automatic reordering rules based on stock levels</p>
+                  <div className="text-sm text-gray-600">
+                    <p>• Set minimum stock thresholds</p>
+                    <p>• Configure reorder quantities</p>
+                    <p>• Select preferred suppliers</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
       {/* Purchase Order Creation Modal */}
       <CreatePurchaseOrderModal
         isOpen={showCreateOrderModal}

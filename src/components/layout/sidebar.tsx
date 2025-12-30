@@ -15,7 +15,10 @@ import {
   Building2,
   User,
   LogOut,
+  Bell,
+  Settings as SettingsIcon,
 } from "lucide-react";
+import GlobalSearch from "@/components/GlobalSearch";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -67,6 +70,11 @@ export default function Sidebar() {
       label: "Dashboard",
     },
     {
+      href: "/sales",
+      icon: ShoppingCart,
+      label: "Point of Sale",
+    },
+    {
       href: "/inventory",
       icon: Package,
       label: "Inventory",
@@ -74,7 +82,7 @@ export default function Sidebar() {
     {
       href: "/invoices",
       icon: FileCheck,
-      label: "Invoice",
+      label: "Invoices",
     },
     // {
     //   href: "/prescription",
@@ -89,7 +97,7 @@ export default function Sidebar() {
     {
       href: "/purchase",
       icon: ShoppingCart,
-      label: "Purchase",
+      label: "Purchase Orders",
     },
     {
       href: "/supplier",
@@ -105,6 +113,16 @@ export default function Sidebar() {
       href: "/superadmin",
       icon: Users,
       label: "Super Admin",
+    },
+    {
+      href: "/notifications",
+      icon: Bell,
+      label: "Notifications",
+    },
+    {
+      href: "/settings",
+      icon: SettingsIcon,
+      label: "Settings",
     },
   ];
 
@@ -157,6 +175,13 @@ export default function Sidebar() {
               </button>
             </div>
           </div>
+
+          {/* Global Search */}
+          {!isCollapsed && (
+            <div className="px-4 pb-4">
+              <GlobalSearch />
+            </div>
+          )}
 
           <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
             {navigationItems.map((item) => {

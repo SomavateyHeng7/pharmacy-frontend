@@ -8,6 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import ExcelStockUpload from '@/components/ExcelStockUpload';
 import AddDrugForm from '@/components/form/AddDrugForm';
 import { BarcodeQRManager } from '@/components/BarcodeQRManager';
+import { AddBatchModal } from '@/components/inventory/AddBatchModal';
+import { useToast } from '@/components/ui/use-toast';
+import { PageHeader, PageContainer } from '@/components/shared';
 import {
   Package,
   Search,
@@ -35,7 +38,8 @@ import {
   RefreshCw,
   QrCode,
   Settings,
-  Archive
+  Archive,
+  MoreVertical
 } from 'lucide-react';
 
 // Enhanced interfaces
@@ -114,6 +118,23 @@ function DrugDetailModal({ drug, batches, purchaseOrders, isOpen, onClose, onEdi
   const [activeTab, setActiveTab] = useState('overview');
   const [stockAdjustment, setStockAdjustment] = useState(0);
   const [adjustmentReason, setAdjustmentReason] = useState('');
+  const [showActionsMenu, setShowActionsMenu] = useState(false);
+  
+  useEffect(() => {
+    const handleClickOutside = () => {
+      if (showActionsMenu) {
+        setShowActionsMenu(false);
+      }
+    };
+    
+    if (showActionsMenu) {
+      document.addEventListener('click', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [showActionsMenu]);
   
   if (!isOpen || !drug) return null;
   
@@ -134,22 +155,58 @@ function DrugDetailModal({ drug, batches, purchaseOrders, isOpen, onClose, onEdi
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/10 dark:bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-6xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="text-2xl font-semibold">{drug.name}</h3>
             <p className="text-muted-foreground">{drug.genericName} • {drug.strength} • {drug.form}</p>
           </div>
           <div className="flex items-center space-x-2">
-            <Button variant="outline" onClick={onEdit}>
-              <Edit className="h-4 w-4 mr-2" />
-              Edit
-            </Button>
-            <Button variant="outline" onClick={onDelete} className="text-red-600">
-              <Trash2 className="h-4 w-4 mr-2" />
-              Delete
-            </Button>
+            <div className="relative">
+              <Button 
+                variant="outline" 
+                size="icon"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowActionsMenu(!showActionsMenu);
+                }}
+                className="hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+              {showActionsMenu && (
+                <div 
+                  className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="py-1">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowActionsMenu(false);
+                        onEdit();
+                      }}
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2"
+                    >
+                      <Edit className="h-4 w-4" />
+                      <span>Edit</span>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowActionsMenu(false);
+                        onDelete();
+                      }}
+                      className="w-full px-4 py-2 text-left text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
             <Button variant="ghost" onClick={onClose}>×</Button>
           </div>
         </div>
@@ -1403,13 +1460,23 @@ export function DrugInventory() {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [supplierFilter, setSupplierFilter] = useState('All');
+  const [expiryFilter, setExpiryFilter] = useState('All');
+  const [prescriptionFilter, setPrescriptionFilter] = useState('All');
+  const [refrigerationFilter, setRefrigerationFilter] = useState('All');
+  const [controlledFilter, setControlledFilter] = useState('All');
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [selectedDrugs, setSelectedDrugs] = useState<Set<string>>(new Set());
   const [drugs, setDrugs] = useState<Drug[]>(mockDrugs);
-  const [batches] = useState<Batch[]>(mockBatches);
+  const [batches, setBatches] = useState<Batch[]>(mockBatches);
   const [purchaseOrders] = useState<PurchaseOrder[]>(mockPurchaseOrders);
   const [isAddingDrug, setIsAddingDrug] = useState(false);
   const [isUploadingExcel, setIsUploadingExcel] = useState(false);
   const [showBarcodeScanner, setShowBarcodeScanner] = useState(false);
   const [activeTab, setActiveTab] = useState('inventory');
+  const [isAddBatchModalOpen, setIsAddBatchModalOpen] = useState(false);
+  const [selectedDrugForBatch, setSelectedDrugForBatch] = useState<Drug | null>(null);
+  const { toast } = useToast();
   
   // Drug detail modal state
   const [selectedDrug, setSelectedDrug] = useState<Drug | null>(null);
@@ -1421,6 +1488,11 @@ export function DrugInventory() {
   
   const categories = ['All', ...Array.from(new Set(drugs.map(drug => drug.category)))];
   const statusOptions = ['All', 'Low Stock', 'Normal', 'Overstock', 'Out of Stock'];
+  const suppliers = ['All', ...Array.from(new Set(drugs.map(drug => drug.supplierName || 'Unknown').filter(Boolean)))];
+  const expiryOptions = ['All', 'Expiring Soon (30 days)', 'Expiring Soon (90 days)', 'Expired'];
+  const prescriptionOptions = ['All', 'Prescription Required', 'No Prescription'];
+  const refrigerationOptions = ['All', 'Refrigeration Required', 'No Refrigeration'];
+  const controlledOptions = ['All', 'Controlled Substance', 'Not Controlled'];
 
   const handleAddDrug = (formData: any) => {
     const newDrug: Drug = {
@@ -1455,6 +1527,50 @@ export function DrugInventory() {
     };
     setDrugs(prev => [...prev, newDrug]);
     setIsAddingDrug(false);
+  };
+
+  const handleAddBatch = (batchData: any) => {
+    try {
+      // TODO: Integrate with backend API
+      // await api.drugs.addBatch(batchData);
+      const newBatch: Batch = {
+        id: `BATCH${String(batches.length + 1).padStart(3, '0')}`,
+        drugId: batchData.drugId,
+        drugName: drugs.find(d => d.id === batchData.drugId)?.name || 'Unknown Drug',
+        batchNumber: batchData.batchNumber,
+        expiryDate: new Date(batchData.expiryDate),
+        manufacturingDate: batchData.manufacturingDate ? new Date(batchData.manufacturingDate) : new Date(),
+        quantity: batchData.quantity,
+        remainingQuantity: batchData.quantity,
+        costPrice: batchData.costPrice,
+        supplierId: 'SUP001',
+        supplierName: batchData.supplier || 'Unknown',
+        receivedDate: new Date(),
+        status: 'active',
+        notes: batchData.notes || '',
+      };
+
+      setBatches(prev => [...prev, newBatch]);
+
+      // Update drug stock
+      setDrugs(prev => prev.map(drug => 
+        drug.id === batchData.drugId
+          ? { ...drug, currentStock: drug.currentStock + batchData.quantity }
+          : drug
+      ));
+
+      toast({
+        title: "Batch Added Successfully",
+        description: `Batch ${batchData.batchNumber} has been added to inventory.`,
+        variant: "success",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add batch. Please try again.",
+        variant: "error",
+      });
+    }
   };
 
   const handleExcelImport = (excelData: any[]) => {
@@ -1556,9 +1672,47 @@ export function DrugInventory() {
       else if (statusFilter === 'Overstock') matchesStatus = drug.currentStock >= drug.maxStockLevel;
       else if (statusFilter === 'Out of Stock') matchesStatus = drug.currentStock === 0;
       
-      return matchesSearch && matchesCategory && matchesStatus;
+      const matchesSupplier = supplierFilter === 'All' || drug.supplierName === supplierFilter;
+      
+      let matchesExpiry = true;
+      if (expiryFilter !== 'All') {
+        const drugBatches = batches.filter(b => b.drugId === drug.id && b.status === 'active');
+        if (expiryFilter === 'Expired') {
+          matchesExpiry = drugBatches.some(b => new Date(b.expiryDate) < new Date());
+        } else if (expiryFilter === 'Expiring Soon (30 days)') {
+          const thirtyDaysFromNow = new Date();
+          thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
+          matchesExpiry = drugBatches.some(b => {
+            const expiry = new Date(b.expiryDate);
+            return expiry > new Date() && expiry <= thirtyDaysFromNow;
+          });
+        } else if (expiryFilter === 'Expiring Soon (90 days)') {
+          const ninetyDaysFromNow = new Date();
+          ninetyDaysFromNow.setDate(ninetyDaysFromNow.getDate() + 90);
+          matchesExpiry = drugBatches.some(b => {
+            const expiry = new Date(b.expiryDate);
+            return expiry > new Date() && expiry <= ninetyDaysFromNow;
+          });
+        }
+      }
+      
+      const matchesPrescription = prescriptionFilter === 'All' || 
+        (prescriptionFilter === 'Prescription Required' && drug.prescriptionRequired) ||
+        (prescriptionFilter === 'No Prescription' && !drug.prescriptionRequired);
+      
+      const matchesRefrigeration = refrigerationFilter === 'All' ||
+        (refrigerationFilter === 'Refrigeration Required' && drug.refrigerationRequired) ||
+        (refrigerationFilter === 'No Refrigeration' && !drug.refrigerationRequired);
+      
+      const matchesControlled = controlledFilter === 'All' ||
+        (controlledFilter === 'Controlled Substance' && drug.controlled_substance) ||
+        (controlledFilter === 'Not Controlled' && !drug.controlled_substance);
+      
+      return matchesSearch && matchesCategory && matchesStatus && matchesSupplier && 
+             matchesExpiry && matchesPrescription && matchesRefrigeration && matchesControlled;
     });
-  }, [drugs, searchTerm, categoryFilter, statusFilter]);
+  }, [drugs, searchTerm, categoryFilter, statusFilter, supplierFilter, expiryFilter, 
+      prescriptionFilter, refrigerationFilter, controlledFilter, batches]);
 
   const getStockStatus = (drug: Drug) => {
     if (drug.currentStock === 0) return 'out';
@@ -1577,39 +1731,35 @@ export function DrugInventory() {
   };
 
   return (
-    <div className="min-h-screen from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
-        <div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">Drug Inventory Management</h2>
-          <p className="text-sm sm:text-base text-gray-600 mt-1">
-            Comprehensive drug tracking with batch management, barcode scanning, and automated alerts
-          </p>
-        </div>
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-          <Button 
-            onClick={() => setShowBarcodeScanner(true)}
-            variant="outline"
-            className="w-full sm:w-auto border-blue-600 text-blue-600 hover:bg-blue-50"
-          >
-            <ScanLine className="w-4 h-4 mr-2" />
-            Scan Barcode
-          </Button>
-          <Button 
-            onClick={() => setIsUploadingExcel(true)}
-            variant="outline"
-            className="w-full sm:w-auto border-green-600 text-green-600 hover:bg-green-50"
-          >
-            <Upload className="w-4 h-4 mr-2" />
-            Import Excel
-          </Button>
-          <Button onClick={() => setIsAddingDrug(true)} className="w-full sm:w-auto">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Drug
-          </Button>
-        </div>
-      </div>
+    <PageContainer maxWidth="7xl">
+      <PageHeader
+        title="Drug Inventory Management"
+        subtitle="Comprehensive drug tracking with batch management, barcode scanning, and automated alerts"
+        action={
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+            <Button 
+              onClick={() => setShowBarcodeScanner(true)}
+              variant="outline"
+              className="w-full sm:w-auto border-blue-600 text-blue-600 hover:bg-blue-50"
+            >
+              <ScanLine className="w-4 h-4 mr-2" />
+              Scan Barcode
+            </Button>
+            <Button 
+              onClick={() => setIsUploadingExcel(true)}
+              variant="outline"
+              className="w-full sm:w-auto border-green-600 text-green-600 hover:bg-green-50"
+            >
+              <Upload className="w-4 h-4 mr-2" />
+              Import Excel
+            </Button>
+            <Button onClick={() => setIsAddingDrug(true)} className="w-full sm:w-auto">
+              <Plus className="w-4 h-4 mr-2" />
+              Add Drug
+            </Button>
+          </div>
+        }
+      />
 
       {/* Metrics Dashboard */}
       <InventoryMetrics drugs={drugs} batches={batches} />
@@ -1663,16 +1813,194 @@ export function DrugInventory() {
           ))}
         </select>
         
-        <Button variant="outline" className="w-full sm:w-auto">
+        <Button 
+          variant="outline" 
+          className="w-full sm:w-auto"
+          onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+        >
           <Filter className="h-4 w-4 mr-2" />
-          More Filters
+          {showAdvancedFilters ? 'Hide Filters' : 'More Filters'}
         </Button>
       </div>
 
+      {/* Advanced Filters Panel */}
+      {showAdvancedFilters && (
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="text-lg">Advanced Filters</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div>
+                <label className="text-sm font-medium mb-1 block">Supplier</label>
+                <select 
+                  className="w-full px-3 py-2 border rounded-md text-sm"
+                  value={supplierFilter}
+                  onChange={(e) => setSupplierFilter(e.target.value)}
+                >
+                  {suppliers.map(supplier => (
+                    <option key={supplier} value={supplier}>{supplier}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-1 block">Expiry Status</label>
+                <select 
+                  className="w-full px-3 py-2 border rounded-md text-sm"
+                  value={expiryFilter}
+                  onChange={(e) => setExpiryFilter(e.target.value)}
+                >
+                  {expiryOptions.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-1 block">Prescription</label>
+                <select 
+                  className="w-full px-3 py-2 border rounded-md text-sm"
+                  value={prescriptionFilter}
+                  onChange={(e) => setPrescriptionFilter(e.target.value)}
+                >
+                  {prescriptionOptions.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-1 block">Storage</label>
+                <select 
+                  className="w-full px-3 py-2 border rounded-md text-sm"
+                  value={refrigerationFilter}
+                  onChange={(e) => setRefrigerationFilter(e.target.value)}
+                >
+                  {refrigerationOptions.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-1 block">Controlled Status</label>
+                <select 
+                  className="w-full px-3 py-2 border rounded-md text-sm"
+                  value={controlledFilter}
+                  onChange={(e) => setControlledFilter(e.target.value)}
+                >
+                  {controlledOptions.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-end">
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => {
+                    setSupplierFilter('All');
+                    setExpiryFilter('All');
+                    setPrescriptionFilter('All');
+                    setRefrigerationFilter('All');
+                    setControlledFilter('All');
+                    setCategoryFilter('All');
+                    setStatusFilter('All');
+                    setSearchTerm('');
+                  }}
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Clear All Filters
+                </Button>
+              </div>
+            </div>
+
+            {/* Active Filters Summary */}
+            <div className="mt-4 flex flex-wrap gap-2">
+              {categoryFilter !== 'All' && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  Category: {categoryFilter}
+                  <button onClick={() => setCategoryFilter('All')} className="ml-1 hover:text-red-600">×</button>
+                </Badge>
+              )}
+              {statusFilter !== 'All' && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  Status: {statusFilter}
+                  <button onClick={() => setStatusFilter('All')} className="ml-1 hover:text-red-600">×</button>
+                </Badge>
+              )}
+              {supplierFilter !== 'All' && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  Supplier: {supplierFilter}
+                  <button onClick={() => setSupplierFilter('All')} className="ml-1 hover:text-red-600">×</button>
+                </Badge>
+              )}
+              {expiryFilter !== 'All' && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  Expiry: {expiryFilter}
+                  <button onClick={() => setExpiryFilter('All')} className="ml-1 hover:text-red-600">×</button>
+                </Badge>
+              )}
+              {prescriptionFilter !== 'All' && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  {prescriptionFilter}
+                  <button onClick={() => setPrescriptionFilter('All')} className="ml-1 hover:text-red-600">×</button>
+                </Badge>
+              )}
+              {refrigerationFilter !== 'All' && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  {refrigerationFilter}
+                  <button onClick={() => setRefrigerationFilter('All')} className="ml-1 hover:text-red-600">×</button>
+                </Badge>
+              )}
+              {controlledFilter !== 'All' && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  {controlledFilter}
+                  <button onClick={() => setControlledFilter('All')} className="ml-1 hover:text-red-600">×</button>
+                </Badge>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Batch Selection Actions */}
+      {selectedDrugs.size > 0 && (
+        <Card className="mb-6 bg-blue-50 dark:bg-blue-950 border-blue-200">
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-blue-600" />
+                <span className="font-medium">{selectedDrugs.size} item(s) selected</span>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={() => setSelectedDrugs(new Set())}>
+                  Clear Selection
+                </Button>
+                <Button size="sm" variant="outline">
+                  <Download className="h-4 w-4 mr-2" />
+                  Export Selected
+                </Button>
+                <Button size="sm" variant="outline">
+                  <ShoppingCart className="h-4 w-4 mr-2" />
+                  Bulk Reorder
+                </Button>
+                <Button size="sm" variant="outline">
+                  <Archive className="h-4 w-4 mr-2" />
+                  Batch Actions
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Content based on active tab */}
       {activeTab === 'inventory' && (
-        <div className="grid gap-6 grid-cols-1 lg:grid-cols-4">
-          <div className="lg:col-span-3">
+        <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
+          <div className="lg:col-span-2">
             {/* Drug List */}
             <div className="grid gap-4">
               {filteredDrugs.map((drug) => {
@@ -1685,17 +2013,38 @@ export function DrugInventory() {
                   <Card 
                     key={drug.id} 
                     className="cursor-pointer hover:shadow-lg transition-all"
-                    onClick={() => handleDrugClick(drug)}
                   >
                     <CardContent className="pt-6">
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <div className="space-y-2 flex-1">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <h3 className="font-semibold text-base sm:text-lg">{drug.name}</h3>
-                            {getStockBadge(stockStatus)}
-                            {drug.controlled_substance && <Badge variant="outline" className="border-purple-500 text-purple-600 text-xs">Controlled</Badge>}
-                            {drug.refrigerationRequired && <Badge variant="outline" className="border-blue-500 text-blue-600 text-xs">Refrigerated</Badge>}
-                          </div>
+                      <div className="flex items-start gap-3">
+                        {/* Checkbox for selection */}
+                        <input
+                          type="checkbox"
+                          checked={selectedDrugs.has(drug.id)}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            const newSelected = new Set(selectedDrugs);
+                            if (e.target.checked) {
+                              newSelected.add(drug.id);
+                            } else {
+                              newSelected.delete(drug.id);
+                            }
+                            setSelectedDrugs(newSelected);
+                          }}
+                          onClick={(e) => e.stopPropagation()}
+                          className="mt-1 h-4 w-4 cursor-pointer"
+                        />
+                        
+                        <div 
+                          className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 flex-1"
+                          onClick={() => handleDrugClick(drug)}
+                        >
+                          <div className="space-y-2 flex-1">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <h3 className="font-semibold text-base sm:text-lg">{drug.name}</h3>
+                              {getStockBadge(stockStatus)}
+                              {drug.controlled_substance && <Badge variant="outline" className="border-purple-500 text-purple-600 text-xs">Controlled</Badge>}
+                              {drug.refrigerationRequired && <Badge variant="outline" className="border-blue-500 text-blue-600 text-xs">Refrigerated</Badge>}
+                            </div>
                           <p className="text-xs sm:text-sm text-muted-foreground">
                             {drug.genericName} • {drug.strength} • {drug.form}
                           </p>
@@ -1745,6 +2094,7 @@ export function DrugInventory() {
                           )}
                         </div>
                       </div>
+                      </div>
                     </CardContent>
                   </Card>
                 );
@@ -1769,19 +2119,39 @@ export function DrugInventory() {
                 <CardTitle className="text-sm">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <Button variant="outline" size="sm" className="w-full justify-start">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full justify-start"
+                  onClick={() => alert('Update stock levels functionality to be implemented')}
+                >
                   <RefreshCw className="h-4 w-4 mr-2" />
                   Update Stock Levels
                 </Button>
-                <Button variant="outline" size="sm" className="w-full justify-start">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full justify-start"
+                  onClick={() => alert('Export inventory functionality to be implemented')}
+                >
                   <Download className="h-4 w-4 mr-2" />
                   Export Inventory
                 </Button>
-                <Button variant="outline" size="sm" className="w-full justify-start">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full justify-start"
+                  onClick={() => alert('Generate reports functionality to be implemented')}
+                >
                   <BarChart3 className="h-4 w-4 mr-2" />
                   Generate Reports
                 </Button>
-                <Button variant="outline" size="sm" className="w-full justify-start">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full justify-start"
+                  onClick={() => alert('Inventory settings functionality to be implemented')}
+                >
                   <Settings className="h-4 w-4 mr-2" />
                   Inventory Settings
                 </Button>
@@ -1795,7 +2165,7 @@ export function DrugInventory() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">Batch Tracking & Expiry Management</h3>
-            <Button>
+            <Button onClick={() => setIsAddBatchModalOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Add Batch
             </Button>
@@ -1867,8 +2237,8 @@ export function DrugInventory() {
 
       {/* Modals */}
       {isAddingDrug && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/10 dark:bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setIsAddingDrug(false)}>
+          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <AddDrugForm
               onSubmit={handleAddDrug}
               onCancel={() => setIsAddingDrug(false)}
@@ -1879,8 +2249,8 @@ export function DrugInventory() {
       )}
 
       {isUploadingExcel && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-5xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/10 dark:bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setIsUploadingExcel(false)}>
+          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-5xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <ExcelStockUpload 
               onDataImport={handleExcelImport}
               onClose={() => setIsUploadingExcel(false)}
@@ -1916,8 +2286,8 @@ export function DrugInventory() {
       />
 
       {showBarcodeScanner && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full p-6">
+        <div className="fixed inset-0 bg-black/10 dark:bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setShowBarcodeScanner(false)}>
+          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full p-6" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">Barcode/QR Scanner</h3>
               <Button variant="ghost" onClick={() => setShowBarcodeScanner(false)}>×</Button>
@@ -1929,8 +2299,18 @@ export function DrugInventory() {
           </div>
         </div>
       )}
-      </div>
-    </div>
+
+      <AddBatchModal
+        isOpen={isAddBatchModalOpen}
+        onClose={() => {
+          setIsAddBatchModalOpen(false);
+          setSelectedDrugForBatch(null);
+        }}
+        onSubmit={handleAddBatch}
+        drugId={selectedDrugForBatch?.id}
+        drugName={selectedDrugForBatch?.name}
+      />
+    </PageContainer>
   );
 }
 

@@ -31,7 +31,8 @@ import {
   History,
   FileText,
   Zap,
-  Database
+  Database,
+  X
 } from 'lucide-react';
 
 // Mock data for prescriptions
@@ -119,15 +120,99 @@ const emrIntegrations = [
 
 function PrescriptionUploadModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [uploadMethod, setUploadMethod] = useState<'upload' | 'scan' | 'manual'>('upload');
+  const [uploadedImages, setUploadedImages] = useState<Array<{ id: string; url: string; name: string; size: number; type: string }>>([]);
+  const [isDragging, setIsDragging] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const validateFile = (file: File): string | null => {
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+
+    if (file.size > maxSize) {
+      return `File ${file.name} exceeds 10MB limit`;
+    }
+    if (!allowedTypes.includes(file.type)) {
+      return `File ${file.name} must be JPG, PNG, or PDF`;
+    }
+    return null;
+  };
+
+  const handleFiles = (files: FileList | null) => {
+    if (!files) return;
+
+    const fileArray = Array.from(files);
+    const newImages: typeof uploadedImages = [];
+    const errors: string[] = [];
+
+    fileArray.forEach(file => {
+      const error = validateFile(file);
+      if (error) {
+        errors.push(error);
+      } else {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const newImage = {
+            id: Math.random().toString(36).substr(2, 9),
+            url: e.target?.result as string,
+            name: file.name,
+            size: file.size,
+            type: file.type
+          };
+          setUploadedImages(prev => [...prev, newImage]);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    if (errors.length > 0) {
+      alert(errors.join('\n'));
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    handleFiles(e.dataTransfer.files);
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleFiles(e.target.files);
+  };
+
+  const removeImage = (id: string) => {
+    setUploadedImages(prev => prev.filter(img => img.id !== id));
+    if (selectedImageIndex !== null && uploadedImages[selectedImageIndex]?.id === id) {
+      setSelectedImageIndex(null);
+    }
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold">Add New Prescription</h3>
-          <Button variant="ghost" onClick={onClose}>×</Button>
+          <Button variant="ghost" onClick={onClose}>
+            <X className="h-5 w-5" />
+          </Button>
         </div>
 
         <div className="space-y-6">
@@ -164,11 +249,88 @@ function PrescriptionUploadModal({ isOpen, onClose }: { isOpen: boolean; onClose
 
           {/* Upload Content Based on Method */}
           {uploadMethod === 'upload' && (
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-              <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-lg font-medium">Drop prescription files here</p>
-              <p className="text-sm text-muted-foreground">or click to browse (PDF, JPG, PNG)</p>
-              <Button className="mt-4">Browse Files</Button>
+            <div className="space-y-4">
+              {/* Drag & Drop Zone */}
+              <div
+                className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                  isDragging
+                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                    : 'border-gray-300 hover:border-gray-400'
+                }`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+                style={{ cursor: 'pointer' }}
+              >
+                <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-lg font-medium">Drop prescription files here</p>
+                <p className="text-sm text-muted-foreground">or click to browse (PDF, JPG, PNG - max 10MB each)</p>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  accept=".jpg,.jpeg,.png,.pdf"
+                  className="hidden"
+                  onChange={handleFileSelect}
+                />
+              </div>
+
+              {/* Uploaded Images Gallery */}
+              {uploadedImages.length > 0 && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-base font-medium">Uploaded Files ({uploadedImages.length})</Label>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setUploadedImages([])}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      Clear All
+                    </Button>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {uploadedImages.map((image, index) => (
+                      <div
+                        key={image.id}
+                        className="relative group border rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                        onClick={() => setSelectedImageIndex(index)}
+                      >
+                        {image.type === 'application/pdf' ? (
+                          <div className="aspect-square bg-red-50 dark:bg-red-900/20 flex flex-col items-center justify-center p-4">
+                            <FileText className="h-16 w-16 text-red-500 mb-2" />
+                            <p className="text-xs text-center font-medium truncate w-full">{image.name}</p>
+                          </div>
+                        ) : (
+                          <img
+                            src={image.url}
+                            alt={image.name}
+                            className="w-full h-32 object-cover"
+                          />
+                        )}
+                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-opacity flex items-center justify-center">
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeImage(image.id);
+                            }}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <div className="p-2 bg-gray-50 dark:bg-gray-900">
+                          <p className="text-xs truncate">{image.name}</p>
+                          <p className="text-xs text-muted-foreground">{formatFileSize(image.size)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -213,10 +375,68 @@ function PrescriptionUploadModal({ isOpen, onClose }: { isOpen: boolean; onClose
 
           <div className="flex justify-end space-x-2">
             <Button variant="outline" onClick={onClose}>Cancel</Button>
-            <Button>Process Prescription</Button>
+            <Button disabled={uploadMethod === 'upload' && uploadedImages.length === 0}>
+              Process Prescription
+            </Button>
           </div>
         </div>
       </div>
+
+      {/* Image Zoom Modal */}
+      {selectedImageIndex !== null && uploadedImages[selectedImageIndex] && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-90 z-60 flex items-center justify-center p-4"
+          onClick={() => setSelectedImageIndex(null)}
+        >
+          <div className="relative max-w-5xl max-h-full" onClick={(e) => e.stopPropagation()}>
+            <Button
+              variant="ghost"
+              className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white"
+              onClick={() => setSelectedImageIndex(null)}
+            >
+              <X className="h-6 w-6" />
+            </Button>
+            {uploadedImages[selectedImageIndex].type === 'application/pdf' ? (
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-8 text-center">
+                <FileText className="h-32 w-32 text-red-500 mx-auto mb-4" />
+                <p className="text-lg font-medium">{uploadedImages[selectedImageIndex].name}</p>
+                <p className="text-sm text-muted-foreground mt-2">
+                  PDF preview not available. File will be processed on submission.
+                </p>
+              </div>
+            ) : (
+              <img
+                src={uploadedImages[selectedImageIndex].url}
+                alt={uploadedImages[selectedImageIndex].name}
+                className="max-w-full max-h-[85vh] object-contain rounded-lg"
+              />
+            )}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSelectedImageIndex(Math.max(0, selectedImageIndex - 1))}
+                disabled={selectedImageIndex === 0}
+                className="text-white hover:bg-white/20"
+              >
+                Previous
+              </Button>
+              <span className="text-sm">
+                {selectedImageIndex + 1} / {uploadedImages.length}
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSelectedImageIndex(Math.min(uploadedImages.length - 1, selectedImageIndex + 1))}
+                disabled={selectedImageIndex === uploadedImages.length - 1}
+                className="text-white hover:bg-white/20"
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -514,7 +734,10 @@ export default function PrescriptionPage() {
           </p>
         </div>
         <div className="flex space-x-2">
-          <Button variant="outline">
+          <Button 
+            variant="outline"
+            onClick={() => alert('Export reports functionality to be implemented')}
+          >
             <Download className="h-4 w-4 mr-2" />
             Export Reports
           </Button>

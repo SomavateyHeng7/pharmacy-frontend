@@ -220,7 +220,7 @@ function DailySalesReport() {
     <Card className="shadow-md hover:shadow-lg transition">
       <CardHeader>
         <CardTitle className="flex items-center text-lg sm:text-xl">
-          <Receipt className="h-5 w-5 mr-2 flex-shrink-0" />
+          <Receipt className="h-5 w-5 mr-2 shrink-0" />
           Daily Sales Reports & Summaries
         </CardTitle>
       </CardHeader>
@@ -428,103 +428,103 @@ function ProfitLossStatement() {
   );
 }
 
-function TaxComputationReport() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center">
-          <Banknote className="h-5 w-5 mr-2" />
-          Tax Computation (VAT/GST)
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-6">
-          {/* Sales Tax / VAT */}
-          <div>
-            <h4 className="font-medium text-blue-600 mb-3 flex items-center">
-              <Receipt className="h-4 w-4 mr-2" />
-              Value Added Tax (VAT)
-            </h4>
-            <div className="space-y-3">
-              <div className="p-3 rounded-lg border">
-                <div className="flex justify-between items-center mb-2">
-                  <span>Taxable Amount</span>
-                  <span className="font-medium">${taxData.salesTax.taxableAmount.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between items-center mb-2">
-                  <span>VAT Rate</span>
-                  <span className="font-medium">{taxData.salesTax.vatRate}%</span>
-                </div>
-                <div className="flex justify-between items-center mb-2">
-                  <span>VAT Amount</span>
-                  <span className="font-bold text-blue-600">${taxData.salesTax.vatAmount.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between items-center border-t pt-2">
-                  <span className="font-bold">Total with Tax</span>
-                  <span className="font-bold">${taxData.salesTax.totalWithTax.toLocaleString()}</span>
-                </div>
-              </div>
-            </div>
-          </div>
+// function TaxComputationReport() {
+//   return (
+//     <Card>
+//       <CardHeader>
+//         <CardTitle className="flex items-center">
+//           <Banknote className="h-5 w-5 mr-2" />
+//           Tax Computation (VAT/GST)
+//         </CardTitle>
+//       </CardHeader>
+//       <CardContent>
+//         <div className="space-y-6">
+//           {/* Sales Tax / VAT */}
+//           <div>
+//             <h4 className="font-medium text-blue-600 mb-3 flex items-center">
+//               <Receipt className="h-4 w-4 mr-2" />
+//               Value Added Tax (VAT)
+//             </h4>
+//             <div className="space-y-3">
+//               <div className="p-3 rounded-lg border">
+//                 <div className="flex justify-between items-center mb-2">
+//                   <span>Taxable Amount</span>
+//                   <span className="font-medium">${taxData.salesTax.taxableAmount.toLocaleString()}</span>
+//                 </div>
+//                 <div className="flex justify-between items-center mb-2">
+//                   <span>VAT Rate</span>
+//                   <span className="font-medium">{taxData.salesTax.vatRate}%</span>
+//                 </div>
+//                 <div className="flex justify-between items-center mb-2">
+//                   <span>VAT Amount</span>
+//                   <span className="font-bold text-blue-600">${taxData.salesTax.vatAmount.toLocaleString()}</span>
+//                 </div>
+//                 <div className="flex justify-between items-center border-t pt-2">
+//                   <span className="font-bold">Total with Tax</span>
+//                   <span className="font-bold">${taxData.salesTax.totalWithTax.toLocaleString()}</span>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
 
-          {/* Income Tax */}
-          <div>
-            <h4 className="font-medium text-green-600 mb-3 flex items-center">
-              <Calculator className="h-4 w-4 mr-2" />
-              Income Tax
-            </h4>
-            <div className="p-3 rounded-lg border">
-              <div className="flex justify-between items-center mb-2">
-                <span>Taxable Income</span>
-                <span className={`font-medium ${
-                  taxData.incomeTax.taxableIncome >= 0 ? 'text-green-600' : 'text-red-600'
-                }`}>
-                  ${taxData.incomeTax.taxableIncome >= 0 ? '+' : ''}${taxData.incomeTax.taxableIncome.toLocaleString()}
-                </span>
-              </div>
-              <div className="flex justify-between items-center mb-2">
-                <span>Tax Rate</span>
-                <span className="font-medium">{taxData.incomeTax.taxRate}%</span>
-              </div>
-              <div className="flex justify-between items-center mb-2">
-                <span>Tax Amount</span>
-                <span className="font-bold">${taxData.incomeTax.taxAmount.toLocaleString()}</span>
-              </div>
-              {taxData.incomeTax.taxableIncome < 0 && (
-                <div className="mt-2 p-2 bg-yellow-50 dark:bg-yellow-950 rounded text-sm text-yellow-800 dark:text-yellow-200">
-                  ℹ️ No income tax due on loss. Carry forward available.
-                </div>
-              )}
-            </div>
-          </div>
+//           {/* Income Tax */}
+//           <div>
+//             <h4 className="font-medium text-green-600 mb-3 flex items-center">
+//               <Calculator className="h-4 w-4 mr-2" />
+//               Income Tax
+//             </h4>
+//             <div className="p-3 rounded-lg border">
+//               <div className="flex justify-between items-center mb-2">
+//                 <span>Taxable Income</span>
+//                 <span className={`font-medium ${
+//                   taxData.incomeTax.taxableIncome >= 0 ? 'text-green-600' : 'text-red-600'
+//                 }`}>
+//                   ${taxData.incomeTax.taxableIncome >= 0 ? '+' : ''}${taxData.incomeTax.taxableIncome.toLocaleString()}
+//                 </span>
+//               </div>
+//               <div className="flex justify-between items-center mb-2">
+//                 <span>Tax Rate</span>
+//                 <span className="font-medium">{taxData.incomeTax.taxRate}%</span>
+//               </div>
+//               <div className="flex justify-between items-center mb-2">
+//                 <span>Tax Amount</span>
+//                 <span className="font-bold">${taxData.incomeTax.taxAmount.toLocaleString()}</span>
+//               </div>
+//               {taxData.incomeTax.taxableIncome < 0 && (
+//                 <div className="mt-2 p-2 bg-yellow-50 dark:bg-yellow-950 rounded text-sm text-yellow-800 dark:text-yellow-200">
+//                   ℹ️ No income tax due on loss. Carry forward available.
+//                 </div>
+//               )}
+//             </div>
+//           </div>
 
-          {/* Quarterly Tax Summary */}
-          <div>
-            <h4 className="font-medium text-purple-600 mb-3">Quarterly Tax Summary</h4>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div className="text-center p-3 rounded-lg bg-purple-50 dark:bg-purple-950">
-                <p className="font-bold">${taxData.quarterlyTax.q1.toLocaleString()}</p>
-                <p className="text-xs text-muted-foreground">Q1 2024</p>
-              </div>
-              <div className="text-center p-3 rounded-lg bg-purple-50 dark:bg-purple-950">
-                <p className="font-bold">${taxData.quarterlyTax.q2.toLocaleString()}</p>
-                <p className="text-xs text-muted-foreground">Q2 2024</p>
-              </div>
-              <div className="text-center p-3 rounded-lg bg-purple-50 dark:bg-purple-950">
-                <p className="font-bold">${taxData.quarterlyTax.q3.toLocaleString()}</p>
-                <p className="text-xs text-muted-foreground">Q3 2024</p>
-              </div>
-              <div className="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
-                <p className="font-bold">$0.00</p>
-                <p className="text-xs text-muted-foreground">Q4 2024</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
+//           {/* Quarterly Tax Summary */}
+//           <div>
+//             <h4 className="font-medium text-purple-600 mb-3">Quarterly Tax Summary</h4>
+//             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+//               <div className="text-center p-3 rounded-lg bg-purple-50 dark:bg-purple-950">
+//                 <p className="font-bold">${taxData.quarterlyTax.q1.toLocaleString()}</p>
+//                 <p className="text-xs text-muted-foreground">Q1 2024</p>
+//               </div>
+//               <div className="text-center p-3 rounded-lg bg-purple-50 dark:bg-purple-950">
+//                 <p className="font-bold">${taxData.quarterlyTax.q2.toLocaleString()}</p>
+//                 <p className="text-xs text-muted-foreground">Q2 2024</p>
+//               </div>
+//               <div className="text-center p-3 rounded-lg bg-purple-50 dark:bg-purple-950">
+//                 <p className="font-bold">${taxData.quarterlyTax.q3.toLocaleString()}</p>
+//                 <p className="text-xs text-muted-foreground">Q3 2024</p>
+//               </div>
+//               <div className="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+//                 <p className="font-bold">$0.00</p>
+//                 <p className="text-xs text-muted-foreground">Q4 2024</p>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </CardContent>
+//     </Card>
+//   );
+// }
 
 function AccountingIntegrationsReport() {
   return (
@@ -945,7 +945,7 @@ function InventoryOverview() {
     <Card className="shadow-md hover:shadow-lg transition">
       <CardHeader>
         <CardTitle className="flex items-center text-lg sm:text-xl">
-          <Package className="h-5 w-5 mr-2 flex-shrink-0" />
+          <Package className="h-5 w-5 mr-2 shrink-0" />
           Inventory Overview
         </CardTitle>
       </CardHeader>
@@ -984,33 +984,57 @@ function QuickActions() {
     <Card className="shadow-md hover:shadow-lg transition">
       <CardHeader>
         <CardTitle className="flex items-center text-lg sm:text-xl">
-          <FileText className="h-5 w-5 mr-2 flex-shrink-0" />
+          <FileText className="h-5 w-5 mr-2 shrink-0" />
           Report Actions
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 gap-3">
-          <Button variant="outline" className="justify-start h-auto py-3 px-4 text-left hover:bg-blue-50 transition">
+          <Button 
+            variant="outline" 
+            className="justify-start h-auto py-3 px-4 text-left hover:bg-blue-50 transition"
+            onClick={() => alert('Export sales report functionality to be implemented')}
+          >
             <Download className="h-4 w-4 mr-3 shrink-0" />
             <span className="whitespace-normal text-sm">Export Sales Report</span>
           </Button>
-          <Button variant="outline" className="justify-start h-auto py-3 px-4 text-left hover:bg-blue-50 transition">
+          <Button 
+            variant="outline" 
+            className="justify-start h-auto py-3 px-4 text-left hover:bg-blue-50 transition"
+            onClick={() => alert('Export inventory report functionality to be implemented')}
+          >
             <Download className="h-4 w-4 mr-3 shrink-0" />
             <span className="whitespace-normal text-sm">Export Inventory Report</span>
           </Button>
-          <Button variant="outline" className="justify-start h-auto py-3 px-4 text-left hover:bg-blue-50 transition">
+          <Button 
+            variant="outline" 
+            className="justify-start h-auto py-3 px-4 text-left hover:bg-blue-50 transition"
+            onClick={() => alert('Generate analytics functionality to be implemented')}
+          >
             <PieChart className="h-4 w-4 mr-3 shrink-0" />
             <span className="whitespace-normal text-sm">Generate Analytics</span>
           </Button>
-          <Button variant="outline" className="justify-start h-auto py-3 px-4 text-left hover:bg-blue-50 transition">
+          <Button 
+            variant="outline" 
+            className="justify-start h-auto py-3 px-4 text-left hover:bg-blue-50 transition"
+            onClick={() => alert('Schedule report functionality to be implemented')}
+          >
             <Calendar className="h-4 w-4 mr-3 shrink-0" />
             <span className="whitespace-normal text-sm">Schedule Report</span>
           </Button>
-          <Button variant="outline" className="justify-start h-auto py-3 px-4 text-left hover:bg-blue-50 transition">
+          <Button 
+            variant="outline" 
+            className="justify-start h-auto py-3 px-4 text-left hover:bg-blue-50 transition"
+            onClick={() => alert('Custom report functionality to be implemented')}
+          >
             <Filter className="h-4 w-4 mr-3 shrink-0" />
             <span className="whitespace-normal text-sm">Custom Report</span>
           </Button>
-          <Button variant="outline" className="justify-start h-auto py-3 px-4 text-left hover:bg-blue-50 transition">
+          <Button 
+            variant="outline" 
+            className="justify-start h-auto py-3 px-4 text-left hover:bg-blue-50 transition"
+            onClick={() => alert('View details functionality to be implemented')}
+          >
             <Eye className="h-4 w-4 mr-3 shrink-0" />
             <span className="whitespace-normal text-sm">View Details</span>
           </Button>
@@ -1021,10 +1045,10 @@ function QuickActions() {
 }
 
 export default function ReportsPage() {
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('sales');
 
   const reportTabs = [
-    { id: 'overview', label: 'Overview', icon: BarChart3 },
+    // { id: 'overview', label: 'Overview', icon: BarChart3 },
     { id: 'sales', label: 'Sales Reports', icon: TrendingUp },
     { id: 'financial', label: 'Financial Reports', icon: Calculator },
     { id: 'expiry', label: 'Expiry & Movement', icon: AlertTriangle },
@@ -1039,8 +1063,8 @@ export default function ReportsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">Reports & Analytics</h1>
-            <p className="text-sm sm:text-base text-gray-600 mt-1">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">Reports & Analytics</h1>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
               Comprehensive insights into your pharmacy performance & financials
             </p>
           </div>
@@ -1080,7 +1104,7 @@ export default function ReportsPage() {
         </div>
 
         {/* Report Content */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-6 lg:p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-4 sm:p-6 lg:p-8">
           {activeTab === 'overview' && (
             <div className="space-y-6">
               <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-3">
@@ -1115,7 +1139,7 @@ export default function ReportsPage() {
                 <ProfitLossStatement />
                 <ExpenseTrackingReport />
               </div>
-              <TaxComputationReport />
+              {/* <TaxComputationReport /> */}
             </div>
           )}
 

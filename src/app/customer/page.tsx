@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader, PageContainer, StatsCard } from "@/components/shared";
 import {
   AddCustomerForm,
   CustomerFormData,
@@ -886,29 +887,27 @@ export default function CustomerPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-          {/* Page Title and Actions */}
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
-                Customer & Patient Management
-              </h1>
-              <p className="text-sm sm:text-base text-gray-600 mt-1">
-                Comprehensive patient profiles with medical records and communication
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-              <Button variant="outline" className="w-full sm:w-auto">
-                <Download className="h-4 w-4 mr-2" />
-                Export Data
-              </Button>
-              <Button onClick={() => setIsAddingCustomer(true)} className="w-full sm:w-auto">
-                <UserPlus className="h-4 w-4 mr-2" />
-                New Customer
-              </Button>
-            </div>
+    <PageContainer maxWidth="7xl">
+      <PageHeader
+        title="Customer & Patient Management"
+        subtitle="Comprehensive patient profiles with medical records and communication"
+        action={
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+            <Button 
+              variant="outline" 
+              className="w-full sm:w-auto"
+              onClick={() => alert('Export functionality to be implemented')}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Export Data
+            </Button>
+            <Button onClick={() => setIsAddingCustomer(true)} className="w-full sm:w-auto">
+              <UserPlus className="h-4 w-4 mr-2" />
+              New Customer
+            </Button>
           </div>
+        }
+      />
 
           {/* Quick Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6">
@@ -1189,13 +1188,12 @@ export default function CustomerPage() {
 
           {activeTab === "reminders" && <ReminderManagement />}
 
-          {/* Add Customer Form Modal */}
-          <AddCustomerForm
-            isOpen={isAddingCustomer}
-            onClose={() => setIsAddingCustomer(false)}
-            onSave={handleSaveCustomer}
-          />
-      </div>
-    </div>
+      {/* Add Customer Form Modal */}
+      <AddCustomerForm
+        isOpen={isAddingCustomer}
+        onClose={() => setIsAddingCustomer(false)}
+        onSave={handleSaveCustomer}
+      />
+    </PageContainer>
   );
 }

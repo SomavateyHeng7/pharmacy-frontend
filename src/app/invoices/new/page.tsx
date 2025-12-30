@@ -247,46 +247,39 @@ export default function NewPharmacyInvoicePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="py-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <Link href="/invoices" className="text-blue-600 hover:text-blue-800">
-                  <ArrowLeftIcon className="h-6 w-6" />
-                </Link>
-                <div className="flex items-center space-x-3">
-                  <ReceiptIcon className="h-8 w-8 text-blue-600" />
-                  <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Create Pharmacy Invoice</h1>
-                    <p className="text-sm text-gray-600">Invoice medications, OTC items, and dispensing fees</p>
-                  </div>
-                </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <Link href="/invoices" className="text-blue-600 hover:text-blue-800">
+              <ArrowLeftIcon className="h-6 w-6" />
+            </Link>
+            <div className="flex items-center space-x-3">
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Create Pharmacy Invoice</h1>
+                <p className="text-sm text-gray-600">Invoice medications, OTC items, and dispensing fees</p>
               </div>
-
-              <div className="flex space-x-3">
-                <button
-                  onClick={() => handleSave("draft")}
-                  className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center space-x-2"
-                >
-                  <SaveIcon className="h-4 w-4" />
-                  <span>Save Draft</span>
-                </button>
-                <button
-                  onClick={() => handleSave("send")}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center space-x-2"
-                >
-                  <MailIcon className="h-4 w-4" />
-                  <span>Create & Send</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Invoice number line */}
-            <div className="mt-4 text-sm text-gray-600">
-              Invoice No: <span className="font-semibold text-gray-900">{invoiceData.invoiceNo}</span>
             </div>
           </div>
+          <div className="flex space-x-3">
+            <button
+              onClick={() => handleSave("draft")}
+              className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center space-x-2"
+            >
+              <SaveIcon className="h-4 w-4" />
+              <span>Save Draft</span>
+            </button>
+            <button
+              onClick={() => handleSave("send")}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center space-x-2"
+            >
+              <MailIcon className="h-4 w-4" />
+              <span>Create & Send</span>
+            </button>
+          </div>
+        </div>
+        {/* Invoice number line */}
+        <div className="mt-4 text-sm text-gray-600">
+          Invoice No: <span className="font-semibold text-gray-900">{invoiceData.invoiceNo}</span>
         </div>
       </div>
 
